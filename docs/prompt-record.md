@@ -487,7 +487,7 @@ This added the basic Information Architecture.
 
 ## Prompt 11
 
-Model: Cursor Auto (Plan)
+Model: Cursor Auto
 
 Context window: **EXISTING**
 
@@ -512,8 +512,112 @@ Export (CSV/JSON) and PWA polish are still later stages.
 
 ## Prompt 12
 
-Model: Cursor Auto (Plan)
+Model: Cursor Auto
 
 Context window: **EXISTING**
 
 Prompt:
+
+What are the next steps?
+
+Outcome:
+
+Core v1 is in place (scaffold → NOMIS → IA/shell → all 11 charts). Sensible next stages:
+
+1. **Export** — CSV / JSON on every chart; Share on mobile where supported
+2. **Acceptance checks** — short per-chart checks (e.g. “Demographics → Sex for North West loads and exports”) in docs
+3. **Rate limiting / fetch hygiene** — throttle or serialize NOMIS calls when a topic loads multiple charts
+4. **Responsive chart polish** — mobile label/orientation tweaks called out in requirements
+5. **PWA** — installability; offline = last cache only (already partly covered by the data layer)
+6. **UI polish** — micro-interactions, branding pass (requirements say generic first)
+
+Optional later: deferred topic-map charts (ethnicity, disability, etc.), drop or fold `/spike` once you’re happy charts are proven.
+
+## Prompt 12
+
+Model: Cursor Auto
+
+Context window: **EXISTING**
+
+Prompt:
+
+Implement:
+
+- Export — CSV / JSON on every chart
+- Rate limiting / fetch hygiene
+- PWA — installability
+
+Outcome:
+
+All three are in. Lint and build pass.
+
+**Export**
+
+Every chart has CSV and JSON download buttons (readable category labels, geography/dataset metadata). No invented values.
+
+**Rate limiting / fetch hygiene**
+
+- Client: max 2 concurrent NOMIS calls, 300ms spacing, in-flight dedupe per query key
+- Server: 30 requests / minute / IP on `/api/nomis` (429 + Retry-After)
+
+**PWA**
+
+- Web app manifest (/manifest.webmanifest) + icons
+- App-shell service worker (production only) — caches shell, not API data
+- Offline charts still use last localStorage cache only
+
+Install from the browser on HTTPS (e.g. Vercel). Service worker does not register in next dev.
+
+## Prompt 12
+
+Model: Cursor Auto
+
+Context window: **EXISTING**
+
+Prompt:
+
+Remove the data spike if it is not required.
+
+Outcome:
+
+It still existed at /spike, but it wasn’t needed anymore — topic charts already cover live NOMIS, cache, and error/stale states.
+
+Removed:
+
+- /spike route and DataLayerSpike component
+- Home/footer links and SPIKE_CHART
+- Spike references in docs/ia.md and docs/nomis-research.md
+
+Historical mentions in prompt-record.md / observations.md are left as-is.
+
+## Prompt 13
+
+Model: Cursor Auto
+
+Context window: **EXISTING**
+
+Prompt:
+
+Make the following changes:
+
+1. Default region is "England and Wales"
+
+2. Value displayed in the "Region" dropdown filter should be the region name (i.e. "England and Wales") not the code (i.e. 2092.....).
+
+3. The order of the dropdown, from the top, should be:
+
+- England & Wales (the default)
+- England
+- Wales
+- the other regions in alphabetical order
+
+4. Add an "About" page. Add it to the menu. Include a license.
+
+Outcome:
+
+Done. Here’s what changed:
+
+1. Default region — England and Wales (2092957703)
+2. Dropdown labels — shows names via Base UI items (not NOMIS codes)
+3. Order — England and Wales → England → Wales → English regions A–Z
+4. About — /about in desktop + mobile menus, with Open Government Licence v3.0 attribution for the Census/NOMIS data

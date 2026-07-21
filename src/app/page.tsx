@@ -33,18 +33,6 @@ export default async function HomePage({ searchParams }: HomePageProps) {
             — change region in the header.
           </span>
         </p>
-        <p className="text-sm">
-          <Link
-            href="/spike"
-            className="text-foreground font-medium underline-offset-4 hover:underline"
-          >
-            Open data-layer spike
-          </Link>
-          <span className="text-muted-foreground">
-            {" "}
-            — live fetch, cache, and offline failure.
-          </span>
-        </p>
       </section>
 
       <section className="flex flex-col gap-4">

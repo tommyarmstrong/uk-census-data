@@ -22,6 +22,24 @@ import {
 import { TOPICS } from "@/lib/topics";
 import { cn } from "@/lib/utils";
 
+function navLinkClass(active: boolean) {
+  return cn(
+    "rounded-md px-2 py-1.5 text-xs transition-colors",
+    active
+      ? "bg-muted text-foreground"
+      : "text-muted-foreground hover:text-foreground",
+  );
+}
+
+function sheetLinkClass(active: boolean) {
+  return cn(
+    "rounded-md px-3 py-2 text-sm transition-colors",
+    active
+      ? "bg-muted text-foreground"
+      : "text-muted-foreground hover:text-foreground",
+  );
+}
+
 function SiteHeaderInner() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -29,6 +47,7 @@ function SiteHeaderInner() {
     searchParams.get(GEOGRAPHY_SEARCH_PARAM),
   );
   const geoCode = geography.code;
+  const aboutHref = withGeographyParam("/about", geoCode);
 
   return (
     <header className="bg-background/95 sticky top-0 z-40 border-b backdrop-blur">
@@ -46,7 +65,7 @@ function SiteHeaderInner() {
 
         <nav
           className="ml-auto hidden items-center gap-1 lg:flex"
-          aria-label="Topics"
+          aria-label="Main"
         >
           {TOPICS.map((topic) => {
             const href = withGeographyParam(`/topics/${topic.slug}`, geoCode);
@@ -56,17 +75,18 @@ function SiteHeaderInner() {
               <Link
                 key={topic.slug}
                 href={href}
-                className={cn(
-                  "rounded-md px-2 py-1.5 text-xs transition-colors",
-                  active
-                    ? "bg-muted text-foreground"
-                    : "text-muted-foreground hover:text-foreground",
-                )}
+                className={navLinkClass(active)}
               >
                 {topic.name}
               </Link>
             );
           })}
+          <Link
+            href={aboutHref}
+            className={navLinkClass(pathname === "/about")}
+          >
+            About
+          </Link>
         </nav>
 
         <div className="ml-auto flex items-center gap-2 lg:ml-0">
@@ -89,20 +109,15 @@ function SiteHeaderInner() {
             </SheetTrigger>
             <SheetContent side="right" className="w-72">
               <SheetHeader>
-                <SheetTitle>Topics</SheetTitle>
+                <SheetTitle>Menu</SheetTitle>
               </SheetHeader>
               <div className="mt-4">
                 <RegionFilter id="region-filter-sheet" fullWidth />
               </div>
-              <nav className="mt-4 flex flex-col gap-1" aria-label="Topics">
+              <nav className="mt-4 flex flex-col gap-1" aria-label="Main">
                 <Link
                   href={withGeographyParam("/", geoCode)}
-                  className={cn(
-                    "rounded-md px-3 py-2 text-sm transition-colors",
-                    pathname === "/"
-                      ? "bg-muted text-foreground"
-                      : "text-muted-foreground hover:text-foreground",
-                  )}
+                  className={sheetLinkClass(pathname === "/")}
                 >
                   Home
                 </Link>
@@ -117,17 +132,18 @@ function SiteHeaderInner() {
                     <Link
                       key={topic.slug}
                       href={href}
-                      className={cn(
-                        "rounded-md px-3 py-2 text-sm transition-colors",
-                        active
-                          ? "bg-muted text-foreground"
-                          : "text-muted-foreground hover:text-foreground",
-                      )}
+                      className={sheetLinkClass(active)}
                     >
                       {topic.name}
                     </Link>
                   );
                 })}
+                <Link
+                  href={aboutHref}
+                  className={sheetLinkClass(pathname === "/about")}
+                >
+                  About
+                </Link>
               </nav>
             </SheetContent>
           </Sheet>

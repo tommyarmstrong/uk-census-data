@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 export function SiteFooter() {
   return (
     <footer className="border-t">
@@ -14,16 +12,8 @@ export function SiteFooter() {
           >
             NOMIS
           </a>{" "}
-          (ONS).
-        </p>
-        <p>
-          <Link
-            href="/spike"
-            className="text-foreground underline-offset-4 hover:underline"
-          >
-            Data-layer spike
-          </Link>
-          <span> — live fetch, cache, and offline failure proof.</span>
+          (ONS). Installable as an app; offline uses last cached chart data
+          only.
         </p>
       </div>
     </footer>

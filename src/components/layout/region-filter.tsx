@@ -16,6 +16,11 @@ import {
 } from "@/lib/geography-url";
 import { cn } from "@/lib/utils";
 
+const SELECTABLE_GEOGRAPHIES = getSelectableGeographies();
+const SELECTABLE_ITEMS = Object.fromEntries(
+  SELECTABLE_GEOGRAPHIES.map((option) => [option.code, option.name]),
+);
+
 type RegionFilterProps = {
   className?: string;
   /** Stretch trigger to full width (e.g. mobile sheet). */
@@ -34,7 +39,6 @@ export function RegionFilter({
   const geography = resolveGeographyFromParam(
     searchParams.get(GEOGRAPHY_SEARCH_PARAM),
   );
-  const options = getSelectableGeographies();
 
   const onValueChange = (next: string | null) => {
     if (!next) {
@@ -54,20 +58,24 @@ export function RegionFilter({
       >
         Region
       </label>
-      <Select value={geography.code} onValueChange={onValueChange}>
+      <Select
+        value={geography.code}
+        onValueChange={onValueChange}
+        items={SELECTABLE_ITEMS}
+      >
         <SelectTrigger
           id={id}
           size="sm"
           className={cn(
             fullWidth && "w-full min-w-0",
-            !fullWidth && "max-w-48",
+            !fullWidth && "max-w-56",
           )}
           aria-label="Select region"
         >
-          <SelectValue />
+          <SelectValue placeholder="Select region" />
         </SelectTrigger>
         <SelectContent alignItemWithTrigger={false} align="start">
-          {options.map((option) => (
+          {SELECTABLE_GEOGRAPHIES.map((option) => (
             <SelectItem key={option.code} value={option.code}>
               {option.name}
             </SelectItem>

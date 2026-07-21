@@ -5,7 +5,7 @@ Trimmed to a **v1 set of 1–2 charts per topic** (11 charts total).
 
 Constants live in `src/lib/topic-map.ts` and `src/lib/nomis/constants.ts`.
 
-Geography for all charts: England & Wales regions (`TYPE480`), default **North West** (`2013265922`). Measure: count (`20100`).
+Geography for all charts: England & Wales aggregates and regions; default **England and Wales** (`2092957703`). Measure: count (`20100`).
 
 ---
 

@@ -8,11 +8,11 @@ Chart inventory lives in [topic-map.md](./topic-map.md). NOMIS details live in [
 
 ## Site map
 
-| Route            | Purpose                                                                                                  |
-| ---------------- | -------------------------------------------------------------------------------------------------------- |
-| `/`              | Product intro, selected region label, grid of 8 topics with planned chart names                          |
-| `/topics/[slug]` | One topic: breadcrumb, description, region readout, stacked chart slots (1–2 per topic)                  |
-| `/spike`         | Data-layer proof (live NOMIS / cache / failure). Secondary — footer and home only, not primary topic nav |
+| Route            | Purpose                                                                                 |
+| ---------------- | --------------------------------------------------------------------------------------- |
+| `/`              | Product intro, selected region label, grid of 8 topics with planned chart names         |
+| `/topics/[slug]` | One topic: breadcrumb, description, region readout, stacked chart slots (1–2 per topic) |
+| `/about`         | About the app, data source, and Open Government Licence                                 |
 
 No auth, no account pages, no local-authority or MSOA drill-down.
 
@@ -20,13 +20,13 @@ No auth, no account pages, no local-authority or MSOA drill-down.
 flowchart TD
   Home["/ Home"]
   Topic["/topics/slug Topic page"]
-  Spike["/spike Data-layer spike"]
+  About["/about About"]
   Home -->|topic cards + nav| Topic
-  Home -.->|secondary| Spike
-  Topic -.->|dev reference| Spike
+  Home --> About
   Region["Global region filter"]
   Region --> Home
   Region --> Topic
+  Region --> About
 ```
 
 ---
@@ -34,18 +34,19 @@ flowchart TD
 ## Navigation
 
 - **Brand** → Home
-- **Primary nav**: eight topics from `src/lib/topics.ts` (desktop links + mobile sheet)
+- **Primary nav**: eight topics from `src/lib/topics.ts`, plus **About** (desktop links + mobile sheet)
 - **Global region filter** in the header (desktop: near brand / before topic links; mobile: in the sheet + compact control)
-- **Footer**: Census 2021 / NOMIS attribution and a link to the data-layer spike
+- **Footer**: Census 2021 / NOMIS attribution
 
 ---
 
 ## Region filter
 
-- **Options**: England and Wales + ten England & Wales regions (`ENGLAND_AND_WALES`, `REGIONS` in `src/lib/nomis/constants.ts`)
-- **Default**: North West (`2013265922`)
-- **Persistence**: URL search param `?geography=<code>` (shareable). Invalid or missing → default North West
-- **Scope**: global — changing region updates the param and is visible on home and all topic pages. Charts will respect it when wired.
+- **Options**: England and Wales (default), England, Wales, then English regions A–Z
+- **Default**: England and Wales (`2092957703`)
+- **Persistence**: URL search param `?geography=<code>` (shareable). Invalid or missing → England and Wales
+- **Scope**: global — changing region updates the param and is visible on home and all topic pages
+- **Display**: dropdown shows geography **names**, not NOMIS codes
 
 ---
 
@@ -54,7 +55,7 @@ flowchart TD
 1. Breadcrumb: Home / Topic name
 2. Title + short description
 3. “Showing: {region name}” (header region control is the source of truth)
-4. Chart slots — one panel per v1 chart from the topic map: title, table code, chart-type hint, body = **Data unavailable** until wired (never invented numbers)
+4. Chart slots — one panel per v1 chart from the topic map: title, table code, chart-type hint, live NOMIS chart (or loading/error/stale)
 5. In-page anchors when a topic has two charts
 
 Home is a topic index, not a dashboard of KPIs.
@@ -72,7 +73,7 @@ Shared components under `src/components/data/`:
 | **Error**       | NOMIS fail / offline + no cache         | `role="alert"` + Retry; copy that data cannot be fetched   |
 | **Stale**       | Served from cache after network failure | Subtle “Cached / may be stale” badge on success UI         |
 
-Topic chart slots use **Unavailable** until a vertical slice wires them. Loading / Error / Stale are used on `/spike` and ready for wired charts.
+Topic charts use Loading / Error / Stale via `CensusChartPanel`.
 
 ---
 
@@ -80,7 +81,6 @@ Topic chart slots use **Unavailable** until a vertical slice wires them. Loading
 
 - No mock or invented statistics
 - No finer geographies than region / England & Wales
-- Spike is not primary navigation
 
 ---
 
@@ -88,4 +88,6 @@ Topic chart slots use **Unavailable** until a vertical slice wires them. Loading
 
 All 11 v1 charts (see [topic-map.md](./topic-map.md)) load via `/api/nomis` + `loadCensusSeries`, respect `?geography=`, use browser cache, and render with Recharts (`pie` / `bar` / `horizontal-bar`) plus shared Loading / Error / Stale states.
 
-**Still later:** CSV/JSON export, PWA polish, responsive chart orientation refinements.
+**Also in place:** CSV/JSON export per chart; client fetch queue + in-flight dedupe; proxy rate limit; PWA manifest + app-shell service worker (offline = shell + last chart cache only).
+
+**Still later:** Share-on-mobile, acceptance checks doc, responsive chart orientation refinements, branding polish.

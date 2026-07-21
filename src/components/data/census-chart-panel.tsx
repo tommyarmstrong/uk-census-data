@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { CensusChartView } from "@/components/charts/census-chart-view";
+import { ChartExportActions } from "@/components/data/chart-export-actions";
 import { DataError } from "@/components/data/data-error";
 import { DataLoading } from "@/components/data/data-loading";
 import { DataStaleBadge } from "@/components/data/data-stale-badge";
@@ -100,15 +101,18 @@ export function CensusChartPanel({
 
   return (
     <div className="mt-4 flex flex-col gap-3">
-      <div className="text-muted-foreground flex flex-wrap items-center gap-2 text-xs">
-        <span>
-          {status.source === "network" ? "Live network" : "Browser cache"}
-          {" · "}
-          {status.series.geographyLabel}
-          {" · "}
-          fetched {new Date(status.series.fetchedAt).toLocaleString("en-GB")}
-        </span>
-        {status.stale ? <DataStaleBadge /> : null}
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="text-muted-foreground flex flex-wrap items-center gap-2 text-xs">
+          <span>
+            {status.source === "network" ? "Live network" : "Browser cache"}
+            {" · "}
+            {status.series.geographyLabel}
+            {" · "}
+            fetched {new Date(status.series.fetchedAt).toLocaleString("en-GB")}
+          </span>
+          {status.stale ? <DataStaleBadge /> : null}
+        </div>
+        <ChartExportActions chart={chart} series={status.series} data={data} />
       </div>
       <CensusChartView chartType={chart.chartType} data={data} />
     </div>

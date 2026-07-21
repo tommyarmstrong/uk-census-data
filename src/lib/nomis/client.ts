@@ -1,10 +1,15 @@
+import { AsyncQueue } from "@/lib/nomis/async-queue";
 import {
   cacheKey,
   clearCachedSeries,
   readCachedSeries,
   writeCachedSeries,
 } from "@/lib/nomis/cache";
-import { NOMIS_MEASURES } from "@/lib/nomis/constants";
+import {
+  NOMIS_CLIENT_MAX_CONCURRENT,
+  NOMIS_CLIENT_MIN_INTERVAL_MS,
+  NOMIS_MEASURES,
+} from "@/lib/nomis/constants";
 import type {
   CensusSeries,
   NomisFetchParams,
@@ -27,6 +32,14 @@ type LoadOptions = {
   /** Treat browser offline as cache-only. Default true. */
   useCacheWhenOffline?: boolean;
 };
+
+const networkQueue = new AsyncQueue(
+  NOMIS_CLIENT_MAX_CONCURRENT,
+  NOMIS_CLIENT_MIN_INTERVAL_MS,
+);
+
+/** Deduplicate in-flight network loads for the same cache key. */
+const inflight = new Map<string, Promise<NomisFetchResult>>();
 
 function buildProxyUrl(params: NomisFetchParams): string {
   const search = new URLSearchParams({
@@ -63,11 +76,55 @@ async function fetchFromNetwork(
   return body;
 }
 
+async function loadFromNetworkQueued(
+  params: NomisFetchParams,
+  key: string,
+): Promise<NomisFetchResult> {
+  const existing = inflight.get(key);
+  if (existing) {
+    return existing;
+  }
+
+  const promise = networkQueue
+    .schedule(async () => {
+      try {
+        const series = await fetchFromNetwork(params);
+        writeCachedSeries(key, series);
+        return { series, source: "network" as const };
+      } catch (error) {
+        const cached = readCachedSeries(key);
+        if (cached) {
+          return {
+            series: cached.series,
+            source: "cache" as const,
+            stale: true,
+          };
+        }
+
+        if (error instanceof NomisClientError) {
+          throw error;
+        }
+
+        throw new NomisClientError(
+          error instanceof Error ? error.message : "Failed to fetch NOMIS data",
+          "network",
+        );
+      }
+    })
+    .finally(() => {
+      inflight.delete(key);
+    });
+
+  inflight.set(key, promise);
+  return promise;
+}
+
 /**
  * Load a census series via the Next.js NOMIS proxy.
  * On success, stores the result in localStorage.
  * When offline (or cacheOnly), returns the last successful cache entry.
  * If offline/cacheOnly and no cache exists, throws with a clear failure.
+ * Network calls are queued (concurrency + spacing) and deduped per query key.
  */
 export async function loadCensusSeries(
   params: NomisFetchParams,
@@ -102,29 +159,7 @@ export async function loadCensusSeries(
     );
   }
 
-  try {
-    const series = await fetchFromNetwork({ ...params, measures });
-    writeCachedSeries(key, series);
-    return { series, source: "network" };
-  } catch (error) {
-    const cached = readCachedSeries(key);
-    if (cached) {
-      return {
-        series: cached.series,
-        source: "cache",
-        stale: true,
-      };
-    }
-
-    if (error instanceof NomisClientError) {
-      throw error;
-    }
-
-    throw new NomisClientError(
-      error instanceof Error ? error.message : "Failed to fetch NOMIS data",
-      "network",
-    );
-  }
+  return loadFromNetworkQueued({ ...params, measures }, key);
 }
 
 export function clearCensusSeriesCache(params: NomisFetchParams): void {

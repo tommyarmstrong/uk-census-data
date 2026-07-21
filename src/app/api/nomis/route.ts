@@ -1,14 +1,45 @@
 import { NextResponse } from "next/server";
 
-import { buildNomisJsonStatUrl, NOMIS_MEASURES } from "@/lib/nomis/constants";
+import {
+  buildNomisJsonStatUrl,
+  NOMIS_MEASURES,
+  NOMIS_PROXY_RATE_LIMIT,
+  NOMIS_PROXY_RATE_WINDOW_MS,
+} from "@/lib/nomis/constants";
 import { parseJsonStatSeries } from "@/lib/nomis/parse-jsonstat";
+import { consumeRateLimit } from "@/lib/nomis/server-rate-limit";
 
 export const dynamic = "force-dynamic";
 
 const DATASET_PATTERN = /^NM_\d+_\d+$/;
 const GEOGRAPHY_PATTERN = /^(\d+|TYPE\d+)$/;
 
+function clientKey(request: Request): string {
+  const forwarded = request.headers.get("x-forwarded-for");
+  if (forwarded) {
+    return forwarded.split(",")[0]?.trim() || "anonymous";
+  }
+  return request.headers.get("x-real-ip") ?? "anonymous";
+}
+
 export async function GET(request: Request) {
+  const limit = consumeRateLimit(clientKey(request), {
+    limit: NOMIS_PROXY_RATE_LIMIT,
+    windowMs: NOMIS_PROXY_RATE_WINDOW_MS,
+  });
+
+  if (!limit.ok) {
+    return NextResponse.json(
+      {
+        error: "Too many NOMIS requests. Please wait and try again.",
+      },
+      {
+        status: 429,
+        headers: { "Retry-After": String(limit.retryAfterSec) },
+      },
+    );
+  }
+
   const { searchParams } = new URL(request.url);
   const datasetId = searchParams.get("dataset");
   const geography = searchParams.get("geography");
@@ -64,7 +95,11 @@ export async function GET(request: Request) {
       measuresCode: measures,
     });
 
-    return NextResponse.json(series);
+    return NextResponse.json(series, {
+      headers: {
+        "X-RateLimit-Remaining": String(limit.remaining),
+      },
+    });
   } catch (error) {
     return NextResponse.json(
       {

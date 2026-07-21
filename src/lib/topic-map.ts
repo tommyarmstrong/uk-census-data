@@ -179,6 +179,3 @@ export function getTopicsWithCharts(): TopicWithCharts[] {
 export function getChartById(id: string): TopicChart | undefined {
   return V1_CHARTS.find((chart) => chart.id === id);
 }
-
-/** Spike default: Demographics → Sex for North West. */
-export const SPIKE_CHART = V1_CHARTS[0];

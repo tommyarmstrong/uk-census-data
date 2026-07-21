@@ -1,19 +1,16 @@
 import {
   DEFAULT_GEOGRAPHY,
-  ENGLAND_AND_WALES,
   getGeographyByCode,
-  REGIONS,
+  getSelectableGeographies,
   type Geography,
 } from "@/lib/nomis/constants";
+
+export { getSelectableGeographies };
 
 /** URL search param for the global region filter. */
 export const GEOGRAPHY_SEARCH_PARAM = "geography";
 
-export function getSelectableGeographies(): Geography[] {
-  return [ENGLAND_AND_WALES, ...REGIONS];
-}
-
-/** Resolve a geography code from the URL; invalid/missing → North West default. */
+/** Resolve a geography code from the URL; invalid/missing → England and Wales. */
 export function resolveGeographyFromParam(
   value: string | string[] | undefined | null,
 ): Geography {
