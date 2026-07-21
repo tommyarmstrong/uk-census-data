@@ -482,3 +482,38 @@ Do not update any code until we review togeather, but do propose the next steps.
 Outcome:
 
 The `docs/ia.md` was created, with the plan. Cursor offered a "Build locally" option which was selected.
+
+This added the basic Information Architecture.
+
+## Prompt 11
+
+Model: Cursor Auto (Plan)
+
+Context window: **EXISTING**
+
+Prompt:
+
+Based on the requirements, wire Demographics → Sex for the selected region end-to-end (Recharts pie + existing NOMIS client/cache + shared loading/error/stale), then roll out the rest of the v1 chart set.
+
+Outcomes:
+
+**What landed**
+
+- Recharts pie / bar / horizontal-bar via CensusChartView
+- CensusChartPanel — loadCensusSeries + cache, Loading / Error / Stale, respects ?geography=
+- Topic pages pass geography into every chart slot (Sex first, then the rest of the v1 set)
+- Totals filtered with excludeTotals
+
+**Try it**
+
+Open `/topics/demographics?geography=2013265922` — Sex pie + Age bar should load live from NOMIS. Change region in the header to refetch.
+
+Export (CSV/JSON) and PWA polish are still later stages.
+
+## Prompt 12
+
+Model: Cursor Auto (Plan)
+
+Context window: **EXISTING**
+
+Prompt:

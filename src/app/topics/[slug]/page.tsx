@@ -34,7 +34,7 @@ export default async function TopicPage({
   const charts = getChartsForTopic(topic.slug);
 
   return (
-    <div className="flex max-w-2xl flex-col gap-6">
+    <div className="flex max-w-3xl flex-col gap-6">
       <div className="flex flex-col gap-2">
         <p className="text-muted-foreground text-sm">
           <Link
@@ -74,7 +74,11 @@ export default async function TopicPage({
         <h2 className="text-lg font-medium tracking-tight">Charts</h2>
         <ul className="flex flex-col gap-4">
           {charts.map((chart) => (
-            <ChartSlot key={chart.id} chart={chart} />
+            <ChartSlot
+              key={chart.id}
+              chart={chart}
+              geographyCode={geography.code}
+            />
           ))}
         </ul>
       </section>

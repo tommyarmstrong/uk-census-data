@@ -1,16 +1,15 @@
-import Link from "next/link";
-
-import { DataUnavailable } from "@/components/data/data-unavailable";
+import { CensusChartPanel } from "@/components/data/census-chart-panel";
 import type { TopicChart } from "@/lib/topic-map";
 import { cn } from "@/lib/utils";
 
 type ChartSlotProps = {
   chart: TopicChart;
+  geographyCode: string;
   className?: string;
 };
 
-/** Placeholder chart panel — data unavailable until wired to NOMIS. */
-export function ChartSlot({ chart, className }: ChartSlotProps) {
+/** Chart panel wired to NOMIS for the selected region. */
+export function ChartSlot({ chart, geographyCode, className }: ChartSlotProps) {
   return (
     <li
       id={chart.slug}
@@ -27,20 +26,10 @@ export function ChartSlot({ chart, className }: ChartSlotProps) {
           {chart.description}
         </p>
       </div>
-      <DataUnavailable
-        className="mt-4"
-        detail={
-          <>
-            Chart not wired yet. See the{" "}
-            <Link
-              href="/spike"
-              className="text-foreground underline-offset-4 hover:underline"
-            >
-              data-layer spike
-            </Link>{" "}
-            for a live NOMIS example.
-          </>
-        }
+      <CensusChartPanel
+        key={`${chart.id}-${geographyCode}`}
+        chart={chart}
+        geographyCode={geographyCode}
       />
     </li>
   );

@@ -76,21 +76,16 @@ Topic chart slots use **Unavailable** until a vertical slice wires them. Loading
 
 ---
 
-## Non-goals (this stage)
+## Non-goals (shell / v1 charts)
 
 - No mock or invented statistics
 - No finer geographies than region / England & Wales
 - Spike is not primary navigation
-- Charts are not yet wired to NOMIS on topic pages
 
 ---
 
-## Next stage (proposed)
+## Chart wiring (v1)
 
-**Vertical slice:** wire Demographics → Sex (`NM_2028_1` / TS008) for the selected `?geography=` region end-to-end:
+All 11 v1 charts (see [topic-map.md](./topic-map.md)) load via `/api/nomis` + `loadCensusSeries`, respect `?geography=`, use browser cache, and render with Recharts (`pie` / `bar` / `horizontal-bar`) plus shared Loading / Error / Stale states.
 
-1. Topic page chart slot fetches via existing `/api/nomis` + `loadCensusSeries` (respect region param and localStorage cache)
-2. Render with Recharts (pie), using shared Loading / Error / Stale states
-3. No mock data; export CSV/JSON can follow in a polish pass
-
-Then roll the same pattern across the remaining v1 charts.
+**Still later:** CSV/JSON export, PWA polish, responsive chart orientation refinements.

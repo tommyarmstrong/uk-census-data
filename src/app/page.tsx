@@ -22,8 +22,8 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           UK Census Data
         </h1>
         <p className="text-muted-foreground text-base leading-relaxed">
-          Explore UK Census 2021 statistics by topic and region. Choose a topic
-          below; charts load from NOMIS when wired.
+          Explore UK Census 2021 statistics by topic and region. Charts load
+          live from NOMIS for the selected geography.
         </p>
         <p className="text-sm">
           Showing:{" "}
@@ -51,8 +51,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
         <div className="flex flex-col gap-1">
           <h2 className="text-lg font-medium tracking-tight">Topics</h2>
           <p className="text-muted-foreground text-sm">
-            v1 chart set planned per topic. Charts show “Data unavailable” until
-            wired.
+            v1 charts per topic, filtered by the region in the header.
           </p>
         </div>
 
