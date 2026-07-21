@@ -8,9 +8,7 @@ Major UK Census 2021 topic areas must be integrated with real NOMIS API data, pr
 
 This document is a living product brief. It is **not** intended as a single prompt to build the entire application. Development should proceed in stages (scaffolding, NOMIS research, topic/subtopic mapping, UI/IA, charts, polish), with AI assistance used to research unknowns and propose details for human review before implementation.
 
-
 # Architecture
-
 
 ## Frontend-Only Architecture
 
@@ -23,26 +21,24 @@ Use a frontend-only architecture with the following benefits:
 
 Note: Next.js API routes may be used as a thin proxy to the NOMIS API (e.g. to avoid CORS limits). This is allowed and does not count as a separate backend system.
 
-
 ## Technology Stack
 
 The application must use this stack:
 
-| Technology   | Role                                   | Category      |
-| ------------ | -------------------------------------- | ------------- |
-| Next.js      | Application framework                  | Architecture  |
-| React        | Build UI components                    | Front end     |
-| TypeScript   | Type safety                            | Language      |
-| Tailwind CSS | Styling                                | CSS           |
-| shadcn/ui    | Ready-made UI components               | UI library    |
-| Lucide React | Icons                                  | Assets/UI     |
-| Recharts     | Data visualisation                     | Charts        |
-| ESLint       | Detect code issues                     | Quality       |
-| Prettier     | Format code                            | Quality       |
-| Husky        | Run checks before commits              | Git workflow  |
-| lint-staged  | Run checks only on changed files       | Performance   |
-| Vercel       | Build and host the application         | Deployment    |
-
+| Technology   | Role                             | Category     |
+| ------------ | -------------------------------- | ------------ |
+| Next.js      | Application framework            | Architecture |
+| React        | Build UI components              | Front end    |
+| TypeScript   | Type safety                      | Language     |
+| Tailwind CSS | Styling                          | CSS          |
+| shadcn/ui    | Ready-made UI components         | UI library   |
+| Lucide React | Icons                            | Assets/UI    |
+| Recharts     | Data visualisation               | Charts       |
+| ESLint       | Detect code issues               | Quality      |
+| Prettier     | Format code                      | Quality      |
+| Husky        | Run checks before commits        | Git workflow |
+| lint-staged  | Run checks only on changed files | Performance  |
+| Vercel       | Build and host the application   | Deployment   |
 
 ## Design Principles
 
@@ -57,7 +53,6 @@ These are important!
 - No Mock Data: All data sourced from the NOMIS API on page load
 - Design: Start with a clean, generic modern UI using the stack above; refine branding and visual identity later
 
-
 ## Data Flow
 
 ```mermaid
@@ -69,7 +64,6 @@ flowchart TD
     E --> F[React Components]
     F --> G[Recharts]
 ```
-
 
 # Data Integration
 
@@ -92,24 +86,22 @@ There must be **no mock data in the system**. This is extremely important and mu
 - If NOMIS is unreachable and a valid last-fetched cache exists, use that cache and indicate the data may be stale.
 - If NOMIS is unreachable and no valid cache is available, the visualization must state that data cannot be fetched. Do **not** invent, fabricate, or use placeholder “test” figures.
 
-
 # Topic Areas
 
 The following major topic areas are in scope. Example subtopics in parentheses are illustrative only; the full subtopic list and matching NOMIS datasets/chart types are **to be identified with AI assistance** during research and mapping stages.
 
-| Topic | Example subtopics (incomplete) |
-| ----- | ------------------------------ |
-| Demographics | age, gender, *(to be defined)*  |
-| Housing | types, occupation, *(to be defined)*  |
-| Employment | *(to be defined)* |
-| Education | *(to be defined)* |
-| Health and Disability | *(to be defined)* |
-| Transport | *(to be defined)* |
-| Family and Relationships | *(to be defined)* |
-| Migration | *(to be defined)* |
+| Topic                    | Example subtopics (incomplete)       |
+| ------------------------ | ------------------------------------ |
+| Demographics             | age, gender, _(to be defined)_       |
+| Housing                  | types, occupation, _(to be defined)_ |
+| Employment               | _(to be defined)_                    |
+| Education                | _(to be defined)_                    |
+| Health and Disability    | _(to be defined)_                    |
+| Transport                | _(to be defined)_                    |
+| Family and Relationships | _(to be defined)_                    |
+| Migration                | _(to be defined)_                    |
 
 Subtopics should be grouped sensibly under these topics, with filters where useful.
-
 
 # Geography
 
@@ -117,17 +109,15 @@ Subtopics should be grouped sensibly under these topics, with filters where usef
 - Default geography and exact NOMIS geography codes are to be confirmed during NOMIS research.
 - Finer geographies (e.g. local authority) are out of scope unless added later.
 
-
 # Information Architecture and Acceptance Criteria
 
-Not fully defined yet. These should be co-developed with AI in later stages:
+Site structure, navigation, region filter, and data-state patterns are recorded in [docs/ia.md](./ia.md). Subtopics and chart types for v1 are in [docs/topic-map.md](./topic-map.md).
 
-- Site structure, navigation, and page layout
-- Subtopics per major topic and preferred chart types (bar, pie, etc.)
+Still to co-develop in later stages:
+
 - Concrete acceptance checks per topic/chart (e.g. “Demographics → Age for North West loads from NOMIS and exports CSV”)
 
 Until those exist, implement only what the current stage asks for; do not invent a full product IA unprompted.
-
 
 # Functional Requirements
 
@@ -146,7 +136,6 @@ Until those exist, implement only what the current stage asks for; do not invent
 - Universal Data Export: Export functionality on all chart components (CSV, JSON, and Share on mobile).
 - Smart Label Formatting: Clean, readable category names in exports and charts.
 - Graceful Error Handling: No error popups for user cancellations.
-
 
 # Device Compatibility
 
@@ -171,10 +160,10 @@ Until those exist, implement only what the current stage asks for; do not invent
 - Android Chrome
 - Desktop Chrome
 
-
 ## Not Required
 
 The following are **NOT** envisaged as current or future requirements:
+
 - User authentication
 - Separate backend system (beyond Next.js API routes used as a NOMIS proxy)
 - Permanent server-side data store (browser cache of last successful fetch is allowed)

@@ -2,6 +2,9 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { DataError } from "@/components/data/data-error";
+import { DataLoading } from "@/components/data/data-loading";
+import { DataStaleBadge } from "@/components/data/data-stale-badge";
 import { Button } from "@/components/ui/button";
 import {
   clearCensusSeriesCache,
@@ -163,13 +166,15 @@ export function DataLayerSpike() {
         </div>
         <div>
           <dt className="text-muted-foreground">Source</dt>
-          <dd className="font-medium">
+          <dd className="flex flex-wrap items-center gap-2 font-medium">
             {status.kind === "success"
               ? status.source === "network"
                 ? "Live network"
                 : "Browser cache"
               : "—"}
-            {status.kind === "success" && status.stale ? " (stale)" : ""}
+            {status.kind === "success" && status.stale ? (
+              <DataStaleBadge />
+            ) : null}
           </dd>
         </div>
       </dl>
@@ -200,37 +205,29 @@ export function DataLayerSpike() {
         </Button>
       </div>
 
-      {loading ? (
-        <div
-          className="bg-muted/40 h-28 animate-pulse rounded-lg"
-          aria-busy="true"
-          aria-label="Loading census data"
-        />
-      ) : null}
+      {loading ? <DataLoading /> : null}
 
       {status.kind === "error" ? (
-        <div
-          role="alert"
-          className="border-destructive/40 bg-destructive/5 rounded-lg border p-4"
-        >
-          <p className="text-sm font-medium">Data cannot be fetched</p>
-          <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-            {status.message}
-          </p>
-          {status.code === "offline-no-cache" ? (
-            <p className="text-muted-foreground mt-2 text-sm">
-              Clear cache then use “Read cache only” to reproduce this failure.
-            </p>
-          ) : null}
-        </div>
+        <DataError
+          message={status.message}
+          onRetry={() => runFetch(false)}
+          hint={
+            status.code === "offline-no-cache"
+              ? "Clear cache then use “Read cache only” to reproduce this failure."
+              : undefined
+          }
+        />
       ) : null}
 
       {status.kind === "success" ? (
         <div className="flex flex-col gap-3">
           <div className="flex flex-col gap-1">
-            <h2 className="text-lg font-medium tracking-tight">
-              {status.series.label}
-            </h2>
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="text-lg font-medium tracking-tight">
+                {status.series.label}
+              </h2>
+              {status.stale ? <DataStaleBadge /> : null}
+            </div>
             <p className="text-muted-foreground text-sm">
               {status.series.geographyLabel} · fetched{" "}
               {new Date(status.series.fetchedAt).toLocaleString("en-GB")}

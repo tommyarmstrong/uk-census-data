@@ -1,8 +1,18 @@
 import Link from "next/link";
 
 import { getTopicsWithCharts } from "@/lib/topic-map";
+import {
+  resolveGeographyFromParam,
+  withGeographyParam,
+} from "@/lib/geography-url";
 
-export default function HomePage() {
+type HomePageProps = {
+  searchParams: Promise<{ geography?: string | string[] }>;
+};
+
+export default async function HomePage({ searchParams }: HomePageProps) {
+  const params = await searchParams;
+  const geography = resolveGeographyFromParam(params.geography);
   const topics = getTopicsWithCharts();
 
   return (
@@ -12,9 +22,16 @@ export default function HomePage() {
           UK Census Data
         </h1>
         <p className="text-muted-foreground text-base leading-relaxed">
-          Explore UK Census 2021 statistics by topic and region. Live NOMIS
-          wiring is proven on the data-layer spike; topic charts land in later
-          stages.
+          Explore UK Census 2021 statistics by topic and region. Choose a topic
+          below; charts load from NOMIS when wired.
+        </p>
+        <p className="text-sm">
+          Showing:{" "}
+          <span className="text-foreground font-medium">{geography.name}</span>
+          <span className="text-muted-foreground">
+            {" "}
+            — change region in the header.
+          </span>
         </p>
         <p className="text-sm">
           <Link
@@ -34,8 +51,8 @@ export default function HomePage() {
         <div className="flex flex-col gap-1">
           <h2 className="text-lg font-medium tracking-tight">Topics</h2>
           <p className="text-muted-foreground text-sm">
-            v1 chart set planned per topic. Charts are not wired on these pages
-            yet.
+            v1 chart set planned per topic. Charts show “Data unavailable” until
+            wired.
           </p>
         </div>
 
@@ -43,7 +60,10 @@ export default function HomePage() {
           {topics.map((topic) => (
             <li key={topic.slug}>
               <Link
-                href={`/topics/${topic.slug}`}
+                href={withGeographyParam(
+                  `/topics/${topic.slug}`,
+                  geography.code,
+                )}
                 className="hover:bg-muted/50 block rounded-lg border p-4 transition-colors"
               >
                 <span className="block text-sm font-medium">{topic.name}</span>

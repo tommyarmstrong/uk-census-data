@@ -458,3 +458,27 @@ How to prove the three paths:
 Topic pages list planned charts as “data unavailable” placeholders (not fake stats).
 
 If the v1 set looks right, next stage is IA + shell (region filter, loading/error states), then a vertical slice wiring one chart end-to-end.
+
+## Prompt 11
+
+Model: Cursor Auto (Plan)
+
+Context window: **NEW**
+
+Prompt:
+
+You and I are developing an app together. We have built the basic scaffolding, researched the data connections and wired a data spike as an example of data integration with NOMIS.
+
+Take the following steps:
+
+1. Read but do not comment on the requirements-prompt.md file.
+
+2. Plan an Information Architecture + shell UI. Propose nav, topic pages, region filter, loading/error/empty states. Generic look is fine. Implement the shell with placeholders that say “data unavailable” until wired—not fake stats.
+
+3. Record the IA plan in docs/
+
+Do not update any code until we review togeather, but do propose the next steps.
+
+Outcome:
+
+The `docs/ia.md` was created, with the plan. Cursor offered a "Build locally" option which was selected.
