@@ -7,7 +7,7 @@ A modern web application for exploring and visualising official **UK Census 2021
 - **Eight Census topics** — Demographics, Housing, Employment, Education, Health & Disability, Transport, Family & Relationships, and Migration
 - **Live NOMIS data** — Topic Summary tables fetched on demand (no mock data); cached in the browser with stale indicators
 - **Region filter** — England and Wales, England, Wales, and English regions via shareable `?geography=` URLs
-- **Interactive charts** — Pie, bar, and horizontal-bar views powered by Recharts (11 charts in v1)
+- **Interactive charts** — Pie, bar, and horizontal-bar views powered by Recharts (20 charts across eight topics)
 - **Export** — Download chart data/views from topic pages
 - **PWA** — Installable shell with a service worker for offline-friendly static assets
 - **Quality gates** — ESLint, Prettier, Vitest, Husky, and GitHub Actions CI

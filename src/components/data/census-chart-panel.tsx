@@ -102,6 +102,7 @@ export function CensusChartPanel({
 
   const observations = filterChartObservations(status.series.observations, {
     excludeTotals: chart.excludeTotals,
+    categoryMode: chart.categoryMode,
   });
   const data = toChartData(observations);
   const fetchedLabel = new Date(status.series.fetchedAt).toLocaleString(

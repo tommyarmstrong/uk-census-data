@@ -1,3 +1,4 @@
+import type { CategoryMode } from "@/lib/nomis/chart-data";
 import type { Topic } from "@/lib/topics";
 import { TOPICS } from "@/lib/topics";
 
@@ -15,8 +16,10 @@ export type TopicChart = {
   /** JSON-stat category dimension (lowercase), e.g. c_sex */
   categoryDimension: string;
   chartType: ChartType;
-  /** When true, drop rows whose label starts with "Total:" */
+  /** When true, drop universe Total / All rows */
   excludeTotals?: boolean;
+  /** Prefer leaf categories or 1000+ section rollups when both exist */
+  categoryMode?: CategoryMode;
 };
 
 export type TopicWithCharts = Topic & {
@@ -24,10 +27,10 @@ export type TopicWithCharts = Topic & {
 };
 
 /**
- * v1 chart set: 1–2 NOMIS Topic Summary tables per major topic.
- * Full candidate list and rationale: docs/topic-map.md
+ * Topic Summary charts for the eight major topics (v1 + v3 subtopics).
+ * Inventory and rationale: docs/topic-map.md
  */
-export const V1_CHARTS: TopicChart[] = [
+export const TOPIC_CHARTS: TopicChart[] = [
   {
     id: "demographics-sex",
     slug: "sex",
@@ -49,6 +52,18 @@ export const V1_CHARTS: TopicChart[] = [
     categoryDimension: "c2021_age_19",
     chartType: "bar",
     excludeTotals: true,
+  },
+  {
+    id: "demographics-ethnicity",
+    slug: "ethnicity",
+    name: "Ethnic group",
+    description: "Usual residents by ethnic group.",
+    datasetId: "NM_2041_1",
+    tableCode: "TS021",
+    categoryDimension: "c2021_eth_20",
+    chartType: "horizontal-bar",
+    excludeTotals: true,
+    categoryMode: "detail",
   },
   {
     id: "housing-tenure",
@@ -73,6 +88,17 @@ export const V1_CHARTS: TopicChart[] = [
     excludeTotals: true,
   },
   {
+    id: "housing-cars",
+    slug: "cars-or-vans",
+    name: "Car or van availability",
+    description: "Households by number of cars or vans available.",
+    datasetId: "NM_2063_1",
+    tableCode: "TS045",
+    categoryDimension: "c2021_cars_5",
+    chartType: "bar",
+    excludeTotals: true,
+  },
+  {
     id: "employment-economic-activity",
     slug: "economic-activity",
     name: "Economic activity",
@@ -80,6 +106,31 @@ export const V1_CHARTS: TopicChart[] = [
     datasetId: "NM_2083_1",
     tableCode: "TS066",
     categoryDimension: "c2021_eastat_20",
+    chartType: "horizontal-bar",
+    excludeTotals: true,
+    categoryMode: "detail",
+  },
+  {
+    id: "employment-industry",
+    slug: "industry",
+    name: "Industry",
+    description:
+      "Usual residents in employment by industry section (SIC sections).",
+    datasetId: "NM_2077_1",
+    tableCode: "TS060",
+    categoryDimension: "c2021_ind_88",
+    chartType: "horizontal-bar",
+    excludeTotals: true,
+    categoryMode: "summary",
+  },
+  {
+    id: "employment-occupation",
+    slug: "occupation",
+    name: "Occupation",
+    description: "Usual residents in employment by occupation.",
+    datasetId: "NM_2080_1",
+    tableCode: "TS063",
+    categoryDimension: "c2021_occ_10",
     chartType: "horizontal-bar",
     excludeTotals: true,
   },
@@ -95,6 +146,18 @@ export const V1_CHARTS: TopicChart[] = [
     excludeTotals: true,
   },
   {
+    id: "education-students",
+    slug: "students",
+    name: "Schoolchildren and full-time students",
+    description:
+      "Usual residents aged 5+ who are schoolchildren or full-time students.",
+    datasetId: "NM_2085_1",
+    tableCode: "TS068",
+    categoryDimension: "c2021_student_3",
+    chartType: "pie",
+    excludeTotals: true,
+  },
+  {
     id: "health-general",
     slug: "general-health",
     name: "General health",
@@ -104,6 +167,18 @@ export const V1_CHARTS: TopicChart[] = [
     categoryDimension: "c2021_health_6",
     chartType: "bar",
     excludeTotals: true,
+  },
+  {
+    id: "health-disability",
+    slug: "disability",
+    name: "Disability",
+    description: "Usual residents by disability status under the Equality Act.",
+    datasetId: "NM_2056_1",
+    tableCode: "TS038",
+    categoryDimension: "c2021_disability_5",
+    chartType: "horizontal-bar",
+    excludeTotals: true,
+    categoryMode: "detail",
   },
   {
     id: "transport-method",
@@ -117,6 +192,17 @@ export const V1_CHARTS: TopicChart[] = [
     excludeTotals: true,
   },
   {
+    id: "transport-distance",
+    slug: "distance-to-work",
+    name: "Distance travelled to work",
+    description: "Usual residents in employment by distance travelled to work.",
+    datasetId: "NM_2075_1",
+    tableCode: "TS058",
+    categoryDimension: "c2021_ttwdist_11",
+    chartType: "horizontal-bar",
+    excludeTotals: true,
+  },
+  {
     id: "family-household-composition",
     slug: "household-composition",
     name: "Household composition",
@@ -126,6 +212,19 @@ export const V1_CHARTS: TopicChart[] = [
     categoryDimension: "c2021_hhcomp_15",
     chartType: "horizontal-bar",
     excludeTotals: true,
+    categoryMode: "detail",
+  },
+  {
+    id: "family-legal-partnership",
+    slug: "legal-partnership",
+    name: "Legal partnership status",
+    description: "Usual residents aged 16+ by legal partnership status.",
+    datasetId: "NM_2022_1",
+    tableCode: "TS002",
+    categoryDimension: "c2021_lpstat_12",
+    chartType: "horizontal-bar",
+    excludeTotals: true,
+    categoryMode: "detail",
   },
   {
     id: "migration-country-of-birth",
@@ -149,23 +248,52 @@ export const V1_CHARTS: TopicChart[] = [
     chartType: "pie",
     excludeTotals: true,
   },
+  {
+    id: "migration-year-of-arrival",
+    slug: "year-of-arrival",
+    name: "Year of arrival in the UK",
+    description: "Usual residents by year of arrival in the UK.",
+    datasetId: "NM_2035_1",
+    tableCode: "TS015",
+    categoryDimension: "c2021_arruk_13",
+    chartType: "bar",
+    excludeTotals: true,
+  },
 ];
 
+/** @deprecated Use TOPIC_CHARTS */
+export const V1_CHARTS = TOPIC_CHARTS;
+
 const CHARTS_BY_TOPIC: Record<string, string[]> = {
-  demographics: ["demographics-sex", "demographics-age"],
-  housing: ["housing-tenure", "housing-accommodation"],
-  employment: ["employment-economic-activity"],
-  education: ["education-qualification"],
-  "health-and-disability": ["health-general"],
-  transport: ["transport-method"],
-  "family-and-relationships": ["family-household-composition"],
-  migration: ["migration-country-of-birth", "migration-indicator"],
+  demographics: [
+    "demographics-sex",
+    "demographics-age",
+    "demographics-ethnicity",
+  ],
+  housing: ["housing-tenure", "housing-accommodation", "housing-cars"],
+  employment: [
+    "employment-economic-activity",
+    "employment-industry",
+    "employment-occupation",
+  ],
+  education: ["education-qualification", "education-students"],
+  "health-and-disability": ["health-general", "health-disability"],
+  transport: ["transport-method", "transport-distance"],
+  "family-and-relationships": [
+    "family-household-composition",
+    "family-legal-partnership",
+  ],
+  migration: [
+    "migration-country-of-birth",
+    "migration-indicator",
+    "migration-year-of-arrival",
+  ],
 };
 
 export function getChartsForTopic(topicSlug: string): TopicChart[] {
   const ids = CHARTS_BY_TOPIC[topicSlug] ?? [];
   return ids
-    .map((id) => V1_CHARTS.find((chart) => chart.id === id))
+    .map((id) => TOPIC_CHARTS.find((chart) => chart.id === id))
     .filter((chart): chart is TopicChart => Boolean(chart));
 }
 
@@ -177,5 +305,5 @@ export function getTopicsWithCharts(): TopicWithCharts[] {
 }
 
 export function getChartById(id: string): TopicChart | undefined {
-  return V1_CHARTS.find((chart) => chart.id === id);
+  return TOPIC_CHARTS.find((chart) => chart.id === id);
 }
