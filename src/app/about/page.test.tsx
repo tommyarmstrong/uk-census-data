@@ -25,6 +25,15 @@ describe("AboutPage", () => {
     expect(screen.getByRole("heading", { name: "About" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "NOMIS" })).toBeInTheDocument();
     expect(
+      screen.getByRole("heading", { name: "Software licence" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "MIT License" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Data licence" }),
+    ).toBeInTheDocument();
+    expect(
       screen.getByRole("link", { name: /Open Government Licence/ }),
     ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Back to home" })).toHaveAttribute(

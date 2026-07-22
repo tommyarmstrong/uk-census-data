@@ -33,7 +33,26 @@ export default function AboutPage() {
       </section>
 
       <section className="flex flex-col gap-2">
-        <h2 className="text-xl font-semibold tracking-tight">Licence</h2>
+        <h2 className="text-xl font-semibold tracking-tight">
+          Software licence
+        </h2>
+        <p className="text-muted-foreground text-sm leading-relaxed">
+          This application’s source code is licensed under the{" "}
+          <a
+            href="https://opensource.org/licenses/MIT"
+            className="text-foreground hover:text-primary underline-offset-4 transition-colors hover:underline"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            MIT License
+          </a>
+          . You are free to use, modify, and distribute the code, subject to the
+          licence terms.
+        </p>
+      </section>
+
+      <section className="flex flex-col gap-2">
+        <h2 className="text-xl font-semibold tracking-tight">Data licence</h2>
         <p className="text-muted-foreground text-sm leading-relaxed">
           Census 2021 / NOMIS statistics used in this application are Crown
           copyright and are available under the{" "}
@@ -45,7 +64,7 @@ export default function AboutPage() {
           >
             Open Government Licence v3.0
           </a>
-          .
+          . That licence covers the data, not this application’s source code.
         </p>
         <p className="text-muted-foreground text-sm leading-relaxed">
           You are free to copy, publish, distribute and adapt the information,
