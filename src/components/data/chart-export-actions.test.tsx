@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -67,6 +67,15 @@ function mockViewport(narrow: boolean) {
       }
     },
   };
+}
+
+async function openExportMenu(user: ReturnType<typeof userEvent.setup>) {
+  const exportToggle = await screen.findByRole("button", {
+    name: /Export options for Sex/i,
+  });
+  await user.click(exportToggle);
+  const menu = await screen.findByRole("menu");
+  return { exportToggle, menu };
 }
 
 describe("ChartExportActions", () => {
@@ -284,7 +293,7 @@ describe("ChartExportActions", () => {
     );
   });
 
-  it("collapses CSV, JSON, and Share behind an Export control on narrow viewports", async () => {
+  it("opens an Export popup with CSV, JSON, and Share options on narrow viewports", async () => {
     mockViewport(true);
     const user = userEvent.setup();
 
@@ -300,47 +309,36 @@ describe("ChartExportActions", () => {
       name: /Export options for Sex/i,
     });
     expect(exportToggle).toHaveAttribute("aria-expanded", "false");
-    expect(exportToggle).toHaveAttribute("aria-controls");
-    expect(
-      screen.queryByRole("button", { name: /Export Sex as CSV/i }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole("menu")).not.toBeInTheDocument();
 
-    await user.click(exportToggle);
+    const { menu } = await openExportMenu(user);
 
     expect(exportToggle).toHaveAttribute("aria-expanded", "true");
     expect(
-      screen.getByRole("button", { name: /Export Sex as CSV/i }),
-    ).toBeInTheDocument();
+      within(menu).getByRole("menuitem", { name: /Export as CSV/i }),
+    ).toHaveTextContent("Spreadsheet format");
     expect(
-      screen.getByRole("button", { name: /Export Sex as JSON/i }),
-    ).toBeInTheDocument();
+      within(menu).getByRole("menuitem", { name: /Export as JSON/i }),
+    ).toHaveTextContent("Structured data format");
     expect(
-      screen.getByRole("button", { name: /Share Sex/i }),
-    ).toBeInTheDocument();
-
-    const menu = document.getElementById(
-      exportToggle.getAttribute("aria-controls") ?? "",
-    );
-    expect(menu).toBeTruthy();
-    expect(menu).toContainElement(
-      screen.getByRole("button", { name: /Export Sex as CSV/i }),
-    );
+      within(menu).getByRole("menuitem", { name: /Share Data/i }),
+    ).toHaveTextContent("Share via native apps");
 
     await user.click(
-      screen.getByRole("button", { name: /Export Sex as CSV/i }),
+      within(menu).getByRole("menuitem", { name: /Export as CSV/i }),
     );
     expect(downloadTextFile).toHaveBeenCalledWith(
       "ts008-sex-north-west.csv",
       expect.any(String),
       "text/csv;charset=utf-8",
     );
-    expect(exportToggle).toHaveAttribute("aria-expanded", "false");
-    expect(
-      screen.queryByRole("button", { name: /Export Sex as CSV/i }),
-    ).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(exportToggle).toHaveAttribute("aria-expanded", "false");
+      expect(screen.queryByRole("menu")).not.toBeInTheDocument();
+    });
   });
 
-  it("toggles the Export menu closed without exporting", async () => {
+  it("closes the Export popup without exporting when toggled again", async () => {
     mockViewport(true);
     const user = userEvent.setup();
 
@@ -352,24 +350,20 @@ describe("ChartExportActions", () => {
       />,
     );
 
-    const exportToggle = await screen.findByRole("button", {
-      name: /Export options for Sex/i,
-    });
-
-    await user.click(exportToggle);
+    const { exportToggle, menu } = await openExportMenu(user);
     expect(
-      screen.getByRole("button", { name: /Export Sex as JSON/i }),
+      within(menu).getByRole("menuitem", { name: /Export as JSON/i }),
     ).toBeInTheDocument();
 
     await user.click(exportToggle);
-    expect(exportToggle).toHaveAttribute("aria-expanded", "false");
-    expect(
-      screen.queryByRole("button", { name: /Export Sex as JSON/i }),
-    ).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(exportToggle).toHaveAttribute("aria-expanded", "false");
+      expect(screen.queryByRole("menu")).not.toBeInTheDocument();
+    });
     expect(downloadTextFile).not.toHaveBeenCalled();
   });
 
-  it("exports JSON from the Export menu and collapses it", async () => {
+  it("exports JSON from the Export popup and closes it", async () => {
     mockViewport(true);
     const user = userEvent.setup();
 
@@ -381,12 +375,9 @@ describe("ChartExportActions", () => {
       />,
     );
 
-    const exportToggle = await screen.findByRole("button", {
-      name: /Export options for Sex/i,
-    });
-    await user.click(exportToggle);
+    const { exportToggle, menu } = await openExportMenu(user);
     await user.click(
-      screen.getByRole("button", { name: /Export Sex as JSON/i }),
+      within(menu).getByRole("menuitem", { name: /Export as JSON/i }),
     );
 
     expect(downloadTextFile).toHaveBeenCalledWith(
@@ -394,10 +385,12 @@ describe("ChartExportActions", () => {
       expect.any(String),
       "application/json;charset=utf-8",
     );
-    expect(exportToggle).toHaveAttribute("aria-expanded", "false");
+    await waitFor(() => {
+      expect(exportToggle).toHaveAttribute("aria-expanded", "false");
+    });
   });
 
-  it("shares from the Export menu and collapses after a successful share", async () => {
+  it("shares from the Export popup and closes after a successful share", async () => {
     mockViewport(true);
     const user = userEvent.setup();
     const share = vi.fn().mockResolvedValue(undefined);
@@ -418,17 +411,18 @@ describe("ChartExportActions", () => {
       />,
     );
 
-    const exportToggle = await screen.findByRole("button", {
-      name: /Export options for Sex/i,
-    });
-    await user.click(exportToggle);
-    await user.click(screen.getByRole("button", { name: /Share Sex/i }));
+    const { exportToggle, menu } = await openExportMenu(user);
+    await user.click(
+      within(menu).getByRole("menuitem", { name: /Share Data/i }),
+    );
 
     expect(share).toHaveBeenCalled();
-    expect(exportToggle).toHaveAttribute("aria-expanded", "false");
+    await waitFor(() => {
+      expect(exportToggle).toHaveAttribute("aria-expanded", "false");
+    });
   });
 
-  it("keeps the Export menu open when share is cancelled", async () => {
+  it("keeps the Export popup open when share is cancelled", async () => {
     mockViewport(true);
     const user = userEvent.setup();
     Object.defineProperty(navigator, "share", {
@@ -450,19 +444,18 @@ describe("ChartExportActions", () => {
       />,
     );
 
-    const exportToggle = await screen.findByRole("button", {
-      name: /Export options for Sex/i,
-    });
-    await user.click(exportToggle);
-    await user.click(screen.getByRole("button", { name: /Share Sex/i }));
+    const { exportToggle, menu } = await openExportMenu(user);
+    await user.click(
+      within(menu).getByRole("menuitem", { name: /Share Data/i }),
+    );
 
     expect(exportToggle).toHaveAttribute("aria-expanded", "true");
     expect(
-      screen.getByRole("button", { name: /Share Sex/i }),
+      within(menu).getByRole("menuitem", { name: /Share Data/i }),
     ).toBeInTheDocument();
   });
 
-  it("collapses the Export menu after copying a share link", async () => {
+  it("closes the Export popup after copying a share link", async () => {
     mockViewport(true);
     const user = userEvent.setup();
     Object.defineProperty(navigator, "share", {
@@ -483,17 +476,16 @@ describe("ChartExportActions", () => {
       />,
     );
 
-    const exportToggle = await screen.findByRole("button", {
-      name: /Export options for Sex/i,
-    });
-    await user.click(exportToggle);
-    await user.click(screen.getByRole("button", { name: /Share Sex/i }));
+    const { exportToggle, menu } = await openExportMenu(user);
+    await user.click(
+      within(menu).getByRole("menuitem", { name: /Share Data/i }),
+    );
 
     await waitFor(() => {
       expect(writeText).toHaveBeenCalled();
       expect(
-        screen.getByRole("button", { name: /Share Sex/i }),
-      ).toHaveTextContent("Copied");
+        within(menu).getByRole("menuitem", { name: /Link copied/i }),
+      ).toBeInTheDocument();
     });
 
     await waitFor(
@@ -504,7 +496,7 @@ describe("ChartExportActions", () => {
     );
   });
 
-  it("closes the Export menu when the viewport widens", async () => {
+  it("closes the Export popup when the viewport widens", async () => {
     const viewport = mockViewport(true);
     const user = userEvent.setup();
 
@@ -516,13 +508,8 @@ describe("ChartExportActions", () => {
       />,
     );
 
-    const exportToggle = await screen.findByRole("button", {
-      name: /Export options for Sex/i,
-    });
-    await user.click(exportToggle);
-    expect(
-      screen.getByRole("button", { name: /Export Sex as CSV/i }),
-    ).toBeInTheDocument();
+    await openExportMenu(user);
+    expect(screen.getByRole("menu")).toBeInTheDocument();
 
     viewport.setNarrow(false);
 
@@ -530,6 +517,7 @@ describe("ChartExportActions", () => {
       expect(
         screen.queryByRole("button", { name: /Export options for Sex/i }),
       ).not.toBeInTheDocument();
+      expect(screen.queryByRole("menu")).not.toBeInTheDocument();
       expect(
         screen.getByRole("button", { name: /Export Sex as CSV/i }),
       ).toBeInTheDocument();

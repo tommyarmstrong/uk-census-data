@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ChevronDown,
   Download,
@@ -9,7 +9,13 @@ import {
   Share2,
 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import type { ChartDatum } from "@/lib/nomis/chart-data";
 import type { CensusSeries } from "@/lib/nomis/types";
 import type { TopicChart } from "@/lib/topic-map";
@@ -58,9 +64,12 @@ export function ChartExportActions({
   const basename = buildExportBasename(chart, series);
   const disabled = data.length === 0;
   const isNarrow = useIsNarrow();
-  const menuId = useId();
   const [menuOpen, setMenuOpen] = useState(false);
   const [shareLabel, setShareLabel] = useState("Share");
+  const [shareMenuLabel, setShareMenuLabel] = useState("Share Data");
+  const [shareMenuDescription, setShareMenuDescription] = useState(
+    "Share via native apps",
+  );
   const [wasNarrow, setWasNarrow] = useState(isNarrow);
 
   if (isNarrow !== wasNarrow) {
@@ -76,7 +85,6 @@ export function ChartExportActions({
       seriesToCsv(chart, series, data),
       "text/csv;charset=utf-8",
     );
-    setMenuOpen(false);
   };
 
   const onJson = () => {
@@ -85,10 +93,14 @@ export function ChartExportActions({
       seriesToJson(chart, series, data),
       "application/json;charset=utf-8",
     );
-    setMenuOpen(false);
   };
 
-  const onShare = async () => {
+  const resetShareMenuCopy = () => {
+    setShareMenuLabel("Share Data");
+    setShareMenuDescription("Share via native apps");
+  };
+
+  const onShare = async (fromMenu: boolean) => {
     const url = window.location.href;
     const title = `${chart.name} — UK Census Data`;
     const text = `${chart.name} for ${series.geographyLabel}`;
@@ -100,17 +112,25 @@ export function ChartExportActions({
         (!navigator.canShare || navigator.canShare(shareData))
       ) {
         await navigator.share(shareData);
-        setMenuOpen(false);
+        if (fromMenu) {
+          setMenuOpen(false);
+        }
         return;
       }
 
       if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(url);
-        setShareLabel("Copied");
-        window.setTimeout(() => {
-          setShareLabel("Share");
-          setMenuOpen(false);
-        }, 1600);
+        if (fromMenu) {
+          setShareMenuLabel("Link copied");
+          setShareMenuDescription("URL copied to clipboard");
+          window.setTimeout(() => {
+            resetShareMenuCopy();
+            setMenuOpen(false);
+          }, 1600);
+        } else {
+          setShareLabel("Copied");
+          window.setTimeout(() => setShareLabel("Share"), 1600);
+        }
       }
     } catch (error) {
       // User cancel on share sheet — ignore; other failures stay silent.
@@ -120,8 +140,95 @@ export function ChartExportActions({
     }
   };
 
-  const actionButtons = (
-    <>
+  if (isNarrow) {
+    return (
+      <div
+        role="group"
+        aria-label={`Export and share ${chart.name}`}
+        className={cn("flex", className)}
+      >
+        <DropdownMenu
+          open={menuOpen}
+          onOpenChange={(open) => {
+            setMenuOpen(open);
+            if (!open) {
+              resetShareMenuCopy();
+            }
+          }}
+          disabled={disabled}
+        >
+          <DropdownMenuTrigger
+            disabled={disabled}
+            aria-label={`Export options for ${chart.name}`}
+            className={cn(
+              buttonVariants({ variant: "outline", size: "sm" }),
+              actionButtonClass,
+              "min-w-0 px-2.5",
+            )}
+          >
+            <FileDown data-icon="inline-start" />
+            Export
+            <ChevronDown
+              data-icon="inline-end"
+              className={cn(
+                "size-3.5 transition-transform",
+                menuOpen && "rotate-180",
+              )}
+            />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="min-w-64">
+            <DropdownMenuItem
+              onClick={onCsv}
+              className="min-h-11"
+              label={`Export ${chart.name} as CSV`}
+            >
+              <Download className="mt-0.5" />
+              <span className="flex min-w-0 flex-col gap-0.5">
+                <span className="font-medium">Export as CSV</span>
+                <span className="text-muted-foreground text-xs leading-snug">
+                  Spreadsheet format
+                </span>
+              </span>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={onJson}
+              className="min-h-11"
+              label={`Export ${chart.name} as JSON`}
+            >
+              <FileJson className="mt-0.5" />
+              <span className="flex min-w-0 flex-col gap-0.5">
+                <span className="font-medium">Export as JSON</span>
+                <span className="text-muted-foreground text-xs leading-snug">
+                  Structured data format
+                </span>
+              </span>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              closeOnClick={false}
+              onClick={() => void onShare(true)}
+              className="min-h-11"
+              label={`Share ${chart.name}`}
+            >
+              <Share2 className="mt-0.5" />
+              <span className="flex min-w-0 flex-col gap-0.5">
+                <span className="font-medium">{shareMenuLabel}</span>
+                <span className="text-muted-foreground text-xs leading-snug">
+                  {shareMenuDescription}
+                </span>
+              </span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      role="group"
+      aria-label={`Export and share ${chart.name}`}
+      className={cn("flex flex-wrap gap-1.5 sm:gap-2", className)}
+    >
       <Button
         type="button"
         variant="outline"
@@ -151,7 +258,7 @@ export function ChartExportActions({
         variant="outline"
         size="sm"
         disabled={disabled}
-        onClick={() => void onShare()}
+        onClick={() => void onShare(false)}
         aria-label={`Share ${chart.name}`}
         className={cn(
           actionButtonClass,
@@ -167,47 +274,6 @@ export function ChartExportActions({
           {shareLabel}
         </span>
       </Button>
-    </>
-  );
-
-  return (
-    <div
-      role="group"
-      aria-label={`Export and share ${chart.name}`}
-      className={cn("flex flex-wrap gap-1.5 sm:gap-2", className)}
-    >
-      {isNarrow ? (
-        <>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            disabled={disabled}
-            aria-expanded={menuOpen}
-            aria-controls={menuId}
-            aria-label={`Export options for ${chart.name}`}
-            onClick={() => setMenuOpen((open) => !open)}
-            className={cn(actionButtonClass, "min-w-0 px-2.5")}
-          >
-            <FileDown data-icon="inline-start" />
-            Export
-            <ChevronDown
-              data-icon="inline-end"
-              className={cn(
-                "size-3.5 transition-transform",
-                menuOpen && "rotate-180",
-              )}
-            />
-          </Button>
-          {menuOpen ? (
-            <div id={menuId} className="flex flex-wrap gap-1.5">
-              {actionButtons}
-            </div>
-          ) : null}
-        </>
-      ) : (
-        actionButtons
-      )}
     </div>
   );
 }
