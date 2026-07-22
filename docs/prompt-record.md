@@ -1022,3 +1022,215 @@ Then, if the tests run pass, commit and push the code.
 
 Outcome:
 
+Coverage is solid and the changes are on main.
+
+Tests: 134 passed. Chart-focused coverage is 100% statements/lines/functions for format-label.ts and census-chart-view.tsx (branch ~89–100%).
+
+Added coverage for:
+
+- Label helper edge cases (empty leaf, nested colons, exact budgets, axis width)
+- ChartLegend truncation + title full labels
+- Dense-bar / narrow-viewport horizontal flip
+- Axis tickFormatter behaviour via a richer Recharts mock
+- Tooltip keeping full NOMIS names
+
+Pushed: 11346f7 → origin/main
+_Improve census chart label readability on mobile and desktop._
+
+### Prompt 4
+
+Model: Cursor Auto
+
+Context window: **NEW**
+
+Prompt:
+
+Read docs/roadmap.md without commenting on it.
+
+I want you to sequentially create prompts for an AI agent to develop Stages 2 - 6 and add the prompts to the bottom of the roadmap.md document.
+
+Do not modify any of the code, other than editing the roadmap document.
+
+Output:
+
+Prompts added to `roadmap.md`.
+
+### Prompt 5 (Stage 2 — Targeted design polish)
+
+Model: Cursor Auto
+
+Context window: **NEW**
+
+Prompt:
+
+Implement Stage 2 from docs/roadmap.md: targeted design polish (not a second full redesign).
+
+Context:
+
+- Visual system is locked in docs/design.md (calm institutional, light only, Source Serif 4 + Source Sans 3, cool neutrals + deep teal).
+- IA and routes stay as in docs/ia.md — do not add pages or change navigation structure.
+- Chart inventory stays as in docs/topic-map.md — no new datasets in this stage.
+- Surfaces live mainly under src/app/, src/components/layout/, src/components/data/, and globals.css / app/layout.tsx.
+
+Goals:
+
+- After a short human-approved bullet list (3–5 items), apply only those fixes.
+- Example candidates (propose from a real pass of the UI; do not invent a redesign):
+  - Home topic tiles / emoji density
+  - Chart panel chrome vs export/share clutter
+  - Region filter + subtopic switcher spacing on mobile
+  - Empty / error / stale copy consistency
+  - Doc sync (e.g. stale wording in docs/nomis-research.md or similar)
+- Preserve existing design tokens, mood, and chart colours from docs/design.md.
+
+Constraints:
+
+- No new datasets, topics, routes, or chart types.
+- No mock/invented data.
+- No full visual redesign or dark mode.
+- Do not reopen Stage 1 chart-label work unless a polish item explicitly requires a tiny follow-up.
+- Keep existing unit tests passing; add/adjust tests only if UI behaviour copy or components change in a testable way.
+
+Process:
+
+1. Inspect the live surfaces (home, one dense topic page, empty/error/stale states, docs that look stale) and propose a concrete 3–5 item bullet list.
+2. STOP and wait for human approval / edits to that list. Do not implement before approval.
+3. Implement only the approved items.
+4. Run npm run test:run.
+5. Summarise what changed, what was deferred, and any follow-ups for Stage 3.
+
+Do not start Stages 3–6.
+
+Output:
+
+Inspecting live UI and related docs to propose a short Stage 2 polish list — then I'll stop for your approval before changing anything.
+
+Continuing the surface pass on topic layout, export chrome, and docs.
+
+Checking the region filter, home shell, and whether a local or deployed app is available for a visual pass.
+
+Proposed Stage 2 polish list (from live pass on uk-census-data.vercel.app + code/docs):
+
+1. Quiet home topic tiles — Emojis currently dominate (text-6xl / large clamp); dial them down so tile labels carry more weight and the home grid feels calmer / more institutional, without removing emojis.
+
+2. Tighten chart export/share chrome — Title row + three labelled outline buttons (CSV / JSON / Share) competes with the chart, especially on ~375px. Prefer quieter actions (e.g. icon-only on small screens, or a single secondary row) while keeping export/share usable.
+
+3. Topic mobile spacing + switcher targets — Region filter, subtopic pills, and panel feel loosely stacked; subtopic buttons use text-xs / py-1.5 (under the ≥44px touch guidance). Tighten vertical rhythm and enlarge switcher hit areas on mobile only.
+
+4. Align empty / error / stale copy — Unavailable still says “Chart not wired yet…” though charts are wired; Error / Stale wording is slightly different in tone. Use one quiet institutional voice across those states (tests will need a small copy update).
+
+5. Doc sync — docs/nomis-research.md opener still says “No application code wired yet” (contradicts its own implementation status). docs/ia.md still mentions breadcrumbs, stacked charts, a global region filter, and “11 v1 charts”.
+
+**Not proposing**: redesign, new charts/routes, Stage 1 label work, dark mode, accessibility deep-pass.
+
+Approve this list as-is, trim items, or edit wording — then I’ll implement only what you approve.
+
+### Prompt 6
+
+Model: Cursor Auto
+
+Context window: **EXISTING**
+
+Prompt:
+
+Do not implement the first item (1. Quiet home topic tiles). Implement the other items 2 - 5.
+
+Once implemented ensure high test coverage.
+
+Provided the tests pass, commit the code with comment "chore(UI): ..." and push to origin.
+
+Outcome:
+
+Shipped
+
+- Export/share: icon-first on narrow screens, larger touch targets, actions stack under the title on mobile
+- Topic page: tighter region → switcher → panel spacing; subtopic buttons min-h-11 on mobile
+- Data states: shared “Data unavailable” heading; quieter stale badge; unavailable default no longer says “not wired yet”
+- Docs: ia.md and nomis-research.md synced to the current app
+
+Tests: 136 passed · ~98% coverage on the touched data components
+
+Git: 1378020 — chore(UI): polish chart chrome, topic spacing, and data-state copy — pushed to origin/main
+
+Left uncommitted: docs/prompt-record.md and docs/roadmap.md (not part of this UI polish).
+
+### Prompt 7 (Stage 3 — Percent measure)
+
+Model: Cursor Auto
+
+Context window: **NEW**
+
+Prompt:
+
+Implement Stage 3 from docs/roadmap.md: Count vs Percent measure (`20301`).
+
+Context:
+
+- NOMIS measures already exist in src/lib/nomis/constants.ts as NOMIS_MEASURES.value (`20100`) and NOMIS_MEASURES.percent (`20301`).
+- Fetch path: /api/nomis → src/lib/nomis/client.ts (loadCensusSeries) → cache in src/lib/nomis/cache.ts (cache key already includes measures).
+- Charts load via src/components/data/census-chart-panel.tsx and render in src/components/charts/census-chart-view.tsx.
+- Inventory: docs/topic-map.md and src/lib/topic-map.ts.
+- Exports: src/lib/export/download.ts and chart export actions.
+
+Goals:
+
+- Let the user switch between Count (20100) and Percent (20301) for the wired univariate charts.
+- Research first: confirm percent works on the currently wired datasets (spot-check live NOMIS responses; note any tables that fail).
+- Product: Count / Percent control on the chart panel (or topic-level if that is clearly better — propose one).
+- Data: pass measures through client, proxy query shaping, and cache keys correctly.
+- UI: format axes/tooltips with `%` when percent is selected; keep count formatting for 20100.
+- Exports (CSV/JSON) include which measure was used and the correct values.
+- Tests covering client, panel, and proxy query shaping for measures.
+
+Constraints:
+
+- No new datasets, topics, or geography levels.
+- No mock/invented data — use live NOMIS (or existing fixtures only where tests already do).
+- No full redesign; reuse existing panel chrome and design tokens.
+- Guest cell limits and rate-limit behaviour still apply.
+- Prefer plan → human approve → implement for the toggle UX.
+
+Process:
+
+1. Research: confirm percent on wired datasets; list any that do not support 20301.
+2. Propose Count / Percent UX (placement, default, URL persistence or not) in a short brief.
+3. Implement measures wiring, formatting, exports, and tests.
+4. Run npm run test:run.
+5. Commit the update with message "feat(data): xxx"
+6. Summarise behaviour, any datasets that stay count-only, and follow-ups for Stage 4+.
+
+Do not start Stages 4–6.
+
+Outcome:
+
+Research: all 20 wired datasets return HTTP 200 for measures=20301 (Percent) on England & Wales.
+
+UX (approved): Count / Percent pressed-pill control on the chart panel; measure state lifted to TopicCharts so it persists across subtopics; default Count; no URL persistence; % formatting on axes/tooltips; exports include measure label + code.
+
+Shipped:
+
+- `format-measure` helper; proxy whitelists 20100/20301; client/cache already keyed by measures
+- Panel toggle + percent formatting in census-chart-view
+- CSV/JSON exports include measure; basename ends with `-count` / `-percent`
+- Docs: topic-map, ia, roadmap Stage 3 marked shipped
+- Tests: 146 passed
+
+Count-only datasets: none.
+
+Follow-ups (Stage 4+): `?measure=` URL share; Stage 4 more univariate charts; Stage 5 cross-tabs; Stage 6 LA/MSOA.
+
+Git: feat(data): add count vs percent measure toggle
+
+### Prompt 8
+
+Model: Cursor Auto
+
+Context window: **EXISTING**
+
+Prompt:
+
+Approved.
+
+Outcome:
+
+(Implemented as part of Prompt 7 after approval.)

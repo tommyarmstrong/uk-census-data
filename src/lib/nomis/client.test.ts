@@ -60,6 +60,30 @@ describe("loadCensusSeries", () => {
     );
   });
 
+  it("passes percent measures through the proxy URL and cache key", async () => {
+    const params = {
+      datasetId: "NM_2028_1",
+      geography: "2013265922",
+      measures: NOMIS_MEASURES.percent,
+    };
+    const result = await loadCensusSeries(params);
+
+    expect(result.source).toBe("network");
+    expect(fetch).toHaveBeenCalledWith(
+      "/api/nomis?dataset=NM_2028_1&geography=2013265922&measures=20301",
+      expect.objectContaining({
+        headers: { Accept: "application/json" },
+      }),
+    );
+    expect(peekCensusSeriesCache(params)).toEqual(result.series);
+    expect(
+      peekCensusSeriesCache({
+        ...params,
+        measures: NOMIS_MEASURES.value,
+      }),
+    ).toBeNull();
+  });
+
   it("deduplicates in-flight requests for the same key", async () => {
     let resolveFetch!: (value: unknown) => void;
     const pending = new Promise((resolve) => {

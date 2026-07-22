@@ -1,4 +1,5 @@
 import type { ChartDatum } from "@/lib/nomis/chart-data";
+import { measureDisplayName } from "@/lib/nomis/format-measure";
 import type { CensusSeries } from "@/lib/nomis/types";
 import type { TopicChart } from "@/lib/topic-map";
 
@@ -22,7 +23,8 @@ export function buildExportBasename(
   series: CensusSeries,
 ): string {
   const geo = slugify(series.geographyLabel || series.geographyCode);
-  return `${slugify(chart.tableCode)}-${slugify(chart.slug)}-${geo}`;
+  const measure = slugify(measureDisplayName(series.measuresCode));
+  return `${slugify(chart.tableCode)}-${slugify(chart.slug)}-${geo}-${measure}`;
 }
 
 /** CSV with readable category labels (no invented values). */
@@ -31,12 +33,24 @@ export function seriesToCsv(
   series: CensusSeries,
   data: ChartDatum[],
 ): string {
-  const header = ["category", "code", "value", "geography", "dataset", "table"];
+  const header = [
+    "category",
+    "code",
+    "value",
+    "measure",
+    "measuresCode",
+    "geography",
+    "dataset",
+    "table",
+  ];
+  const measure = measureDisplayName(series.measuresCode);
   const rows = data.map((row) =>
     [
       escapeCsvField(row.name),
       escapeCsvField(row.code),
       String(row.value),
+      escapeCsvField(measure),
+      escapeCsvField(series.measuresCode),
       escapeCsvField(series.geographyLabel),
       escapeCsvField(chart.datasetId),
       escapeCsvField(chart.tableCode),
@@ -62,6 +76,10 @@ export function seriesToJson(
       geography: {
         code: series.geographyCode,
         label: series.geographyLabel,
+      },
+      measure: {
+        code: series.measuresCode,
+        label: measureDisplayName(series.measuresCode),
       },
       source: series.source,
       fetchedAt: series.fetchedAt,

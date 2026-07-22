@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { ChartSlot } from "@/components/data/chart-slot";
+import { NOMIS_MEASURES, type NomisMeasureCode } from "@/lib/nomis/constants";
 import type { TopicChart } from "@/lib/topic-map";
 import { cn } from "@/lib/utils";
 
@@ -13,9 +14,13 @@ type TopicChartsProps = {
 
 /**
  * Subtopic switcher: one live chart at a time. First chart is the default.
+ * Measure (count / percent) persists across subtopic switches.
  */
 export function TopicCharts({ charts, geographyCode }: TopicChartsProps) {
   const [selectedId, setSelectedId] = useState(charts[0]?.id ?? "");
+  const [measures, setMeasures] = useState<NomisMeasureCode>(
+    NOMIS_MEASURES.value,
+  );
   const selected =
     charts.find((chart) => chart.id === selectedId) ?? charts[0] ?? null;
 
@@ -51,9 +56,11 @@ export function TopicCharts({ charts, geographyCode }: TopicChartsProps) {
       ) : null}
 
       <ChartSlot
-        key={`${selected.id}-${geographyCode}`}
+        key={`${selected.id}-${geographyCode}-${measures}`}
         chart={selected}
         geographyCode={geographyCode}
+        measures={measures}
+        onMeasuresChange={setMeasures}
       />
     </section>
   );

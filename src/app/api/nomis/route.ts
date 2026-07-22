@@ -6,6 +6,7 @@ import {
   NOMIS_PROXY_RATE_LIMIT,
   NOMIS_PROXY_RATE_WINDOW_MS,
 } from "@/lib/nomis/constants";
+import { isNomisMeasureCode } from "@/lib/nomis/format-measure";
 import { parseJsonStatSeries } from "@/lib/nomis/parse-jsonstat";
 import { consumeRateLimit } from "@/lib/nomis/server-rate-limit";
 
@@ -59,7 +60,7 @@ export async function GET(request: Request) {
     );
   }
 
-  if (!/^\d+$/.test(measures)) {
+  if (!isNomisMeasureCode(measures)) {
     return NextResponse.json(
       { error: "Invalid measures parameter" },
       { status: 400 },

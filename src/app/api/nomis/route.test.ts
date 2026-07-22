@@ -80,6 +80,28 @@ describe("GET /api/nomis", () => {
       ),
     );
     expect(badMeasures.status).toBe(400);
+
+    const unknownMeasures = await GET(
+      request(
+        "http://localhost/api/nomis?dataset=NM_2028_1&geography=2013265922&measures=99999",
+      ),
+    );
+    expect(unknownMeasures.status).toBe(400);
+  });
+
+  it("forwards percent measures to the upstream NOMIS URL", async () => {
+    const response = await GET(
+      request(
+        "http://localhost/api/nomis?dataset=NM_2028_1&geography=2013265922&measures=20301",
+      ),
+    );
+    expect(response.status).toBe(200);
+    expect(fetch).toHaveBeenCalledWith(
+      expect.stringContaining("measures=20301"),
+      expect.any(Object),
+    );
+    const body = await response.json();
+    expect(body.measuresCode).toBe("20301");
   });
 
   it("returns 429 when rate limited", async () => {

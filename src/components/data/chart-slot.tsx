@@ -1,15 +1,24 @@
 import { CensusChartPanel } from "@/components/data/census-chart-panel";
+import type { NomisMeasureCode } from "@/lib/nomis/constants";
 import type { TopicChart } from "@/lib/topic-map";
 import { cn } from "@/lib/utils";
 
 type ChartSlotProps = {
   chart: TopicChart;
   geographyCode: string;
+  measures: NomisMeasureCode;
+  onMeasuresChange: (measures: NomisMeasureCode) => void;
   className?: string;
 };
 
 /** Bordered chart panel wired to NOMIS for the selected region. */
-export function ChartSlot({ chart, geographyCode, className }: ChartSlotProps) {
+export function ChartSlot({
+  chart,
+  geographyCode,
+  measures,
+  onMeasuresChange,
+  className,
+}: ChartSlotProps) {
   return (
     <div
       id={chart.slug}
@@ -19,9 +28,11 @@ export function ChartSlot({ chart, geographyCode, className }: ChartSlotProps) {
       )}
     >
       <CensusChartPanel
-        key={`${chart.id}-${geographyCode}`}
+        key={`${chart.id}-${geographyCode}-${measures}`}
         chart={chart}
         geographyCode={geographyCode}
+        measures={measures}
+        onMeasuresChange={onMeasuresChange}
       />
     </div>
   );

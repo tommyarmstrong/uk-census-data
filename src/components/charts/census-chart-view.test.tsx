@@ -291,6 +291,24 @@ describe("ChartTooltip", () => {
     expect(screen.getByText("1,234")).toBeInTheDocument();
   });
 
+  it("formats percent measures with a % suffix", () => {
+    render(
+      <ChartTooltip
+        active
+        measures="20301"
+        payload={[
+          {
+            name: "Female",
+            value: 49.2,
+            payload: { code: "1", name: "Female", value: 49.2 },
+          },
+        ]}
+      />,
+    );
+
+    expect(screen.getByText("49.2%")).toBeInTheDocument();
+  });
+
   it("falls back to payload name when the datum is missing", () => {
     render(
       <ChartTooltip active payload={[{ name: "Fallback label", value: 10 }]} />,
