@@ -67,4 +67,12 @@ describe("TopicCharts", () => {
     ).not.toBeInTheDocument();
     expect(screen.getByTestId("chart-slot")).toHaveTextContent("Sex");
   });
+
+  it("renders nothing when there are no charts", () => {
+    const { container } = render(
+      <TopicCharts charts={[]} geographyCode="2013265922" />,
+    );
+
+    expect(container).toBeEmptyDOMElement();
+  });
 });

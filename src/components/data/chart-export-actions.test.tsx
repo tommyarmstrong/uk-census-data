@@ -115,6 +115,78 @@ describe("ChartExportActions", () => {
     });
   });
 
+  it("falls back to clipboard when canShare rejects the payload", async () => {
+    const user = userEvent.setup();
+    const share = vi.fn();
+    Object.defineProperty(navigator, "share", {
+      configurable: true,
+      value: share,
+    });
+    Object.defineProperty(navigator, "canShare", {
+      configurable: true,
+      value: () => false,
+    });
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { writeText },
+    });
+
+    render(
+      <ChartExportActions
+        chart={SAMPLE_CHART}
+        series={SAMPLE_SERIES}
+        data={DATA}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: /Share Sex/i }));
+
+    expect(share).not.toHaveBeenCalled();
+    await waitFor(() => {
+      expect(writeText).toHaveBeenCalled();
+      expect(
+        screen.getByRole("button", { name: /Share Sex/i }),
+      ).toHaveTextContent("Copied");
+    });
+  });
+
+  it("ignores AbortError when the user cancels the share sheet", async () => {
+    const user = userEvent.setup();
+    const share = vi
+      .fn()
+      .mockRejectedValue(new DOMException("Share canceled", "AbortError"));
+    Object.defineProperty(navigator, "share", {
+      configurable: true,
+      value: share,
+    });
+    Object.defineProperty(navigator, "canShare", {
+      configurable: true,
+      value: () => true,
+    });
+    const writeText = vi.fn();
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { writeText },
+    });
+
+    render(
+      <ChartExportActions
+        chart={SAMPLE_CHART}
+        series={SAMPLE_SERIES}
+        data={DATA}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: /Share Sex/i }));
+
+    expect(share).toHaveBeenCalled();
+    expect(writeText).not.toHaveBeenCalled();
+    expect(
+      screen.getByRole("button", { name: /Share Sex/i }),
+    ).toHaveTextContent("Share");
+  });
+
   it("disables export buttons when there is no data", () => {
     const { getByRole } = render(
       <ChartExportActions

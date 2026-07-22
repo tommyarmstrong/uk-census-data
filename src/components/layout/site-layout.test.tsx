@@ -41,6 +41,12 @@ describe("layout components", () => {
     expect(
       screen.getByRole("link", { name: "UK Census Data" }),
     ).toHaveAttribute("href", "/?geography=2013265922");
+
+    const nav = screen.getByRole("navigation", { name: "Main" });
+    const navLinks = Array.from(nav.querySelectorAll("a")).map(
+      (link) => link.textContent,
+    );
+    expect(navLinks[0]).toBe("Home");
     expect(screen.getByRole("link", { name: "Home" })).toHaveAttribute(
       "href",
       "/?geography=2013265922",
