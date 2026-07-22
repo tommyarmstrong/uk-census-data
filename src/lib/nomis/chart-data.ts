@@ -35,9 +35,11 @@ export function filterChartObservations(
 
   const mode = options.categoryMode ?? "all";
   if (mode === "detail") {
+    // Leaves are small integers. Mid-level rollups use 100–999 (e.g. TS039
+    // unpaid care 101/102); section rollups use ≥ 1000.
     rows = rows.filter((row) => {
       const code = numericCode(row.code);
-      return code === null || code < 1000;
+      return code === null || code < 100;
     });
   } else if (mode === "summary") {
     rows = rows.filter((row) => {

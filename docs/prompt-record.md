@@ -1234,3 +1234,52 @@ Approved.
 Outcome:
 
 (Implemented as part of Prompt 7 after approval.)
+
+### Prompt 9 (Stage 4 — More univariate subtopics)
+
+Model: Cursor Auto
+
+Context window: **EXISTING**
+
+Prompt:
+
+Implement Stage 4 from docs/roadmap.md: more univariate subtopics (optional expansion).
+
+Context:
+
+- Current inventory and deferred list: docs/topic-map.md and src/lib/topic-map.ts.
+- Wiring pattern from v3: NOMIS dataset constants → topic-map rows → topic chart panels / slots.
+- Key files: src/lib/nomis/constants.ts (or chart/dataset maps), src/lib/topic-map.ts, src/components/data/topic-charts.tsx, src/components/data/census-chart-panel.tsx.
+- Chart types remain pie / bar / horizontal-bar unless a new table clearly needs the existing patterns only.
+- Docs: docs/nomis-research.md for NOMIS conventions; docs/ia.md for topic-page behaviour (one chart at a time + subtopic switcher).
+
+Goals:
+
+1. Research remaining Census Topic Summaries and propose ≤8 univariate candidates that fit the existing 8 topics.
+2. After human trim/reject in docs/topic-map.md, wire only the approved rows.
+3. Same quality bar as v3: live NOMIS check, tests, readable labels, one mobile check each.
+4. Update docs/topic-map.md (and related constants) so inventory stays the source of truth.
+
+Constraints:
+
+- No cross-tabs, no percent work (unless already shipped in Stage 3 and needed for consistency), no LA/MSOA geography.
+- No mock/invented data.
+- Do not invent chart types beyond the existing univariate set.
+- Do not expand beyond the approved candidate list.
+- Prefer plan → human approve → implement.
+
+Process:
+
+1. Research and propose ≤8 candidates as a table: topic, subtopic name, Census table ID, suggested chart type, brief rationale.
+2. STOP and wait for human trim/reject; update docs/topic-map.md only after approval.
+3. Wire approved rows only (constants → topic-map → panels), following the existing pattern.
+4. Live NOMIS smoke-check each new chart; add/adjust unit tests.
+5. Run npm run test:run.
+6. Commit the code with message "feat(data): xxx" and push to origin.
+7. Summarise what was added, what was rejected, and any label/readability follow-ups.
+
+Do not start Stages 5–6.
+
+Outcomes:
+
+Approved nine charts (eight proposed + TS078 Gender identity). Wired into topic-map (29 total). Live NOMIS E&W smoke-check HTTP 200 for all nine. Detail mode now excludes mid-level 100–999 rollups (TS039 unpaid care). `npm run test:run` — 150 passed. Gender identity uses horizontal-bar (long labels); axis truncation may need a follow-up for the longest NOMIS wording.

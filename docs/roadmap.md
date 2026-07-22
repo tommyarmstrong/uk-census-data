@@ -2,7 +2,7 @@
 
 Staged next work for the UK Census Data app after v3 charts and the v2 design pass.
 
-**Baseline (done):** 20 univariate charts across 8 topics (`docs/topic-map.md`), calm institutional UI (`docs/design.md`), export/share, PWA, Vitest + CI.
+**Baseline (done):** 29 univariate charts across 8 topics (`docs/topic-map.md`), calm institutional UI (`docs/design.md`), export/share, PWA, Vitest + CI.
 
 **Still deferred in topic-map:** cross-tabs, local authority / MSOA geography.
 
@@ -76,6 +76,8 @@ Not a second full redesign. After Stage 1 QA, approve a short bullet list (3–5
 ---
 
 ## Stage 4 — More univariate subtopics (optional)
+
+**Status:** shipped (9 charts: religion, sexual orientation, gender identity, central heating, bedrooms, hours worked, unpaid care, living arrangements, length of residence).
 
 Only after Stages 1–2 (ideally after 3).
 
@@ -291,7 +293,8 @@ Process:
 3. Wire approved rows only (constants → topic-map → panels), following the existing pattern.
 4. Live NOMIS smoke-check each new chart; add/adjust unit tests.
 5. Run npm run test:run.
-6. Summarise what was added, what was rejected, and any label/readability follow-ups.
+6. Commit the code with message "feat(data): xxx" and push to origin.
+7. Summarise what was added, what was rejected, and any label/readability follow-ups.
 
 Do not start Stages 5–6.
 ```

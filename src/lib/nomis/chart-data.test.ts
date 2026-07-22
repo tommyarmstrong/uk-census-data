@@ -43,6 +43,45 @@ describe("filterChartObservations", () => {
     ]);
   });
 
+  it("drops mid-level 100–999 rollups in detail mode", () => {
+    expect(
+      filterChartObservations(
+        [
+          { code: "0", label: "Total", value: 100 },
+          { code: "1", label: "Provides no unpaid care", value: 80 },
+          {
+            code: "101",
+            label: "Provides 19 hours or less unpaid care a week",
+            value: 15,
+          },
+          {
+            code: "2",
+            label: "Provides 9 hours or less unpaid care a week",
+            value: 10,
+          },
+          {
+            code: "3",
+            label: "Provides 10 to 19 hours unpaid care a week",
+            value: 5,
+          },
+        ],
+        { excludeTotals: true, categoryMode: "detail" },
+      ),
+    ).toEqual([
+      { code: "1", label: "Provides no unpaid care", value: 80 },
+      {
+        code: "2",
+        label: "Provides 9 hours or less unpaid care a week",
+        value: 10,
+      },
+      {
+        code: "3",
+        label: "Provides 10 to 19 hours unpaid care a week",
+        value: 5,
+      },
+    ]);
+  });
+
   it("keeps 1000+ rollups only in summary mode", () => {
     expect(
       filterChartObservations(OBSERVATIONS, {

@@ -25,32 +25,38 @@ describe("TOPICS", () => {
 });
 
 describe("topic-map helpers", () => {
-  it("returns v3 charts for demographics including ethnicity", () => {
+  it("returns demographics charts including Stage 4 identity subtopics", () => {
     const charts = getChartsForTopic("demographics");
     expect(charts.map((chart) => chart.id)).toEqual([
       "demographics-sex",
       "demographics-age",
       "demographics-ethnicity",
+      "demographics-religion",
+      "demographics-sexual-orientation",
+      "demographics-gender-identity",
     ]);
   });
 
-  it("wires deferred subtopics onto every major topic", () => {
+  it("wires Stage 4 subtopics onto every expanded topic", () => {
     expect(getChartsForTopic("housing").map((c) => c.id)).toEqual([
       "housing-tenure",
       "housing-accommodation",
       "housing-cars",
+      "housing-central-heating",
+      "housing-bedrooms",
     ]);
     expect(getChartsForTopic("employment").map((c) => c.id)).toEqual([
       "employment-economic-activity",
       "employment-industry",
       "employment-occupation",
+      "employment-hours-worked",
     ]);
     expect(getChartsForTopic("education").map((c) => c.id)).toEqual([
       "education-qualification",
       "education-students",
     ]);
     expect(getChartsForTopic("health-and-disability").map((c) => c.id)).toEqual(
-      ["health-general", "health-disability"],
+      ["health-general", "health-disability", "health-unpaid-care"],
     );
     expect(getChartsForTopic("transport").map((c) => c.id)).toEqual([
       "transport-method",
@@ -58,11 +64,16 @@ describe("topic-map helpers", () => {
     ]);
     expect(
       getChartsForTopic("family-and-relationships").map((c) => c.id),
-    ).toEqual(["family-household-composition", "family-legal-partnership"]);
+    ).toEqual([
+      "family-household-composition",
+      "family-legal-partnership",
+      "family-living-arrangements",
+    ]);
     expect(getChartsForTopic("migration").map((c) => c.id)).toEqual([
       "migration-country-of-birth",
       "migration-indicator",
       "migration-year-of-arrival",
+      "migration-length-of-residence",
     ]);
   });
 
@@ -73,7 +84,7 @@ describe("topic-map helpers", () => {
   it("attaches charts to every topic", () => {
     const topics = getTopicsWithCharts();
     expect(topics).toHaveLength(TOPICS.length);
-    expect(TOPIC_CHARTS).toHaveLength(20);
+    expect(TOPIC_CHARTS).toHaveLength(29);
     for (const topic of topics) {
       expect(topic.charts.length).toBeGreaterThan(0);
       for (const chart of topic.charts) {
@@ -88,6 +99,10 @@ describe("topic-map helpers", () => {
     expect(getChartById("demographics-sex")?.tableCode).toBe("TS008");
     expect(getChartById("employment-industry")?.categoryMode).toBe("summary");
     expect(getChartById("demographics-ethnicity")?.categoryMode).toBe("detail");
+    expect(getChartById("health-unpaid-care")?.categoryMode).toBe("detail");
+    expect(getChartById("demographics-gender-identity")?.chartType).toBe(
+      "horizontal-bar",
+    );
     expect(getChartById("missing")).toBeUndefined();
   });
 });

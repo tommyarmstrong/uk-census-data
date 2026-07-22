@@ -174,6 +174,6 @@ Each table has its own category concept name (e.g. `C2021_HIQUAL_8` for TS067). 
 ## Implementation status
 
 - Constants: `src/lib/nomis/constants.ts`
-- Topic / chart map (v3, 20 charts): `docs/topic-map.md`, `src/lib/topic-map.ts`
+- Topic / chart map (29 charts, through Stage 4): `docs/topic-map.md`, `src/lib/topic-map.ts`
 - Proxy + client: `/api/nomis`, `src/lib/nomis/client.ts` (cache, queue, offline fallback)
 - Charts: topic pages via `CensusChartPanel` (live NOMIS + Recharts)
