@@ -1,7 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import { Download, Share2 } from "lucide-react";
+import { useEffect, useId, useState } from "react";
+import {
+  ChevronDown,
+  Download,
+  FileDown,
+  FileJson,
+  Share2,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import type { ChartDatum } from "@/lib/nomis/chart-data";
@@ -25,6 +31,24 @@ type ChartExportActionsProps = {
 const actionButtonClass =
   "min-h-11 min-w-11 gap-1.5 px-0 sm:min-h-7 sm:min-w-0 sm:px-2.5";
 
+function useIsNarrow(breakpointPx = 640) {
+  const [narrow, setNarrow] = useState(false);
+
+  useEffect(() => {
+    if (typeof window.matchMedia !== "function") {
+      return;
+    }
+
+    const media = window.matchMedia(`(max-width: ${breakpointPx - 1}px)`);
+    const update = () => setNarrow(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, [breakpointPx]);
+
+  return narrow;
+}
+
 export function ChartExportActions({
   chart,
   series,
@@ -33,7 +57,18 @@ export function ChartExportActions({
 }: ChartExportActionsProps) {
   const basename = buildExportBasename(chart, series);
   const disabled = data.length === 0;
+  const isNarrow = useIsNarrow();
+  const menuId = useId();
+  const [menuOpen, setMenuOpen] = useState(false);
   const [shareLabel, setShareLabel] = useState("Share");
+  const [wasNarrow, setWasNarrow] = useState(isNarrow);
+
+  if (isNarrow !== wasNarrow) {
+    setWasNarrow(isNarrow);
+    if (!isNarrow && menuOpen) {
+      setMenuOpen(false);
+    }
+  }
 
   const onCsv = () => {
     downloadTextFile(
@@ -41,6 +76,7 @@ export function ChartExportActions({
       seriesToCsv(chart, series, data),
       "text/csv;charset=utf-8",
     );
+    setMenuOpen(false);
   };
 
   const onJson = () => {
@@ -49,6 +85,7 @@ export function ChartExportActions({
       seriesToJson(chart, series, data),
       "application/json;charset=utf-8",
     );
+    setMenuOpen(false);
   };
 
   const onShare = async () => {
@@ -63,13 +100,17 @@ export function ChartExportActions({
         (!navigator.canShare || navigator.canShare(shareData))
       ) {
         await navigator.share(shareData);
+        setMenuOpen(false);
         return;
       }
 
       if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(url);
         setShareLabel("Copied");
-        window.setTimeout(() => setShareLabel("Share"), 1600);
+        window.setTimeout(() => {
+          setShareLabel("Share");
+          setMenuOpen(false);
+        }, 1600);
       }
     } catch (error) {
       // User cancel on share sheet — ignore; other failures stay silent.
@@ -79,12 +120,8 @@ export function ChartExportActions({
     }
   };
 
-  return (
-    <div
-      role="group"
-      aria-label={`Export and share ${chart.name}`}
-      className={cn("flex flex-wrap gap-1.5 sm:gap-2", className)}
-    >
+  const actionButtons = (
+    <>
       <Button
         type="button"
         variant="outline"
@@ -106,7 +143,7 @@ export function ChartExportActions({
         aria-label={`Export ${chart.name} as JSON`}
         className={actionButtonClass}
       >
-        <Download data-icon="inline-start" />
+        <FileJson data-icon="inline-start" />
         <span className="sr-only sm:not-sr-only">JSON</span>
       </Button>
       <Button
@@ -130,6 +167,47 @@ export function ChartExportActions({
           {shareLabel}
         </span>
       </Button>
+    </>
+  );
+
+  return (
+    <div
+      role="group"
+      aria-label={`Export and share ${chart.name}`}
+      className={cn("flex flex-wrap gap-1.5 sm:gap-2", className)}
+    >
+      {isNarrow ? (
+        <>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={disabled}
+            aria-expanded={menuOpen}
+            aria-controls={menuId}
+            aria-label={`Export options for ${chart.name}`}
+            onClick={() => setMenuOpen((open) => !open)}
+            className={cn(actionButtonClass, "min-w-0 px-2.5")}
+          >
+            <FileDown data-icon="inline-start" />
+            Export
+            <ChevronDown
+              data-icon="inline-end"
+              className={cn(
+                "size-3.5 transition-transform",
+                menuOpen && "rotate-180",
+              )}
+            />
+          </Button>
+          {menuOpen ? (
+            <div id={menuId} className="flex flex-wrap gap-1.5">
+              {actionButtons}
+            </div>
+          ) : null}
+        </>
+      ) : (
+        actionButtons
+      )}
     </div>
   );
 }
