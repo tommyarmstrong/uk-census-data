@@ -132,11 +132,15 @@ The app is frontend-first: Next.js API routes act only as a thin proxy for shapi
 | [docs/nomis-research.md](docs/nomis-research.md) | NOMIS API research notes                |
 | [docs/design.md](docs/design.md)                 | UI / design notes                       |
 
+## Licence
+
+This project’s source code is licensed under the [MIT License](LICENSE).
+
 ## Data source and licence
 
 Statistics are Census 2021 Topic Summary tables published via [NOMIS](https://www.nomisweb.co.uk/) (ONS). Coverage is England and Wales (including English regions). Scotland and Northern Ireland use separate statistical systems and are out of scope.
 
-Census / NOMIS statistics are Crown copyright and available under the [Open Government Licence](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/).
+Census / NOMIS statistics are Crown copyright and available under the [Open Government Licence](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/). That licence covers the data, not this application’s source code.
 
 ## Deployment
 
