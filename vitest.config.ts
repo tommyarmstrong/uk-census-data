@@ -5,6 +5,11 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   plugins: [tsconfigPaths(), react()],
   test: {
+    // Vercel sets NODE_ENV=production during builds; force test so React
+    // resolves the development build (React.act) for Testing Library.
+    env: {
+      NODE_ENV: "test",
+    },
     environment: "jsdom",
     setupFiles: ["./src/test/setup.ts"],
     include: ["src/**/*.{test,spec}.{ts,tsx}"],
