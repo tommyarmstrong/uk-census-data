@@ -1282,4 +1282,53 @@ Do not start Stages 5–6.
 
 Outcomes:
 
-Approved nine charts (eight proposed + TS078 Gender identity). Wired into topic-map (29 total). Live NOMIS E&W smoke-check HTTP 200 for all nine. Detail mode now excludes mid-level 100–999 rollups (TS039 unpaid care). `npm run test:run` — 150 passed. Gender identity uses horizontal-bar (long labels); axis truncation may need a follow-up for the longest NOMIS wording.
+Approved nine charts (eight proposed + TS078 Gender identity). Wired into topic-map (29 total). Live NOMIS E&W smoke-check HTTP 200 for all nine. Detail mode now excludes mid-level 100–999 rollups (TS039 unpaid care). `npm run test:run` — 150 passed. Gender identity uses horizontal-bar (long labels); axis truncation may need a follow-up for the longest NOMIS wording. Commit `e1fc6fe` on `origin/main`.
+
+### Prompt 10 (Stage 4 follow-on alternates)
+
+Model: Cursor Auto
+
+Context window: **EXISTING**
+
+Prompt:
+
+Now connect:
+
+TS052 Occupancy rating for bedrooms (housing) — overcrowding angle
+TS062 NS-SeC (employment) — horizontal-bar; long SOC labels
+TS017 Household size (family) — bar; overlaps slightly with composition
+TS029 Proficiency in English (migration) — detail mode
+TS011 Households by deprivation dimensions (housing) — 5 deprivation bands
+
+Outcomes:
+
+Wired all five approved alternates (inventory 34). Live NOMIS E&W HTTP 200 for each. Topic-map tests passed.
+
+Outcome:
+
+All five are wired. Inventory is now 34 charts.
+
+Topic Chart Table Type
+Housing
+Occupancy rating for bedrooms
+TS052
+bar
+Housing
+Households by deprivation dimensions
+TS011
+bar
+Employment
+NS-SeC
+TS062
+horizontal-bar
+Family & Relationships
+Household size
+TS017
+bar
+Migration
+Proficiency in English
+TS029
+horizontal-bar (detail)
+
+
+Live NOMIS checks returned HTTP 200 for each; topic-map tests passed. Say if you want this committed and pushed.

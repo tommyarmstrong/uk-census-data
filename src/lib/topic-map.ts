@@ -27,7 +27,7 @@ export type TopicWithCharts = Topic & {
 };
 
 /**
- * Topic Summary charts for the eight major topics (v1 + v3 + Stage 4).
+ * Topic Summary charts for the eight major topics (v1 + v3 + Stage 4 + follow-on).
  * Inventory and rationale: docs/topic-map.md
  */
 export const TOPIC_CHARTS: TopicChart[] = [
@@ -154,6 +154,30 @@ export const TOPIC_CHARTS: TopicChart[] = [
     excludeTotals: true,
   },
   {
+    id: "housing-occupancy-bedrooms",
+    slug: "occupancy-rating-bedrooms",
+    name: "Occupancy rating for bedrooms",
+    description:
+      "Households by bedroom occupancy rating (overcrowding / under-occupancy).",
+    datasetId: "NM_2070_1",
+    tableCode: "TS052",
+    categoryDimension: "c2021_occrat_bedrooms_6",
+    chartType: "bar",
+    excludeTotals: true,
+  },
+  {
+    id: "housing-deprivation",
+    slug: "household-deprivation",
+    name: "Households by deprivation dimensions",
+    description:
+      "Households by number of Census deprivation dimensions they are deprived in.",
+    datasetId: "NM_2031_1",
+    tableCode: "TS011",
+    categoryDimension: "c2021_dep_6",
+    chartType: "bar",
+    excludeTotals: true,
+  },
+  {
     id: "employment-economic-activity",
     slug: "economic-activity",
     name: "Economic activity",
@@ -200,6 +224,18 @@ export const TOPIC_CHARTS: TopicChart[] = [
     chartType: "bar",
     excludeTotals: true,
     categoryMode: "detail",
+  },
+  {
+    id: "employment-ns-sec",
+    slug: "ns-sec",
+    name: "NS-SeC",
+    description:
+      "Usual residents aged 16+ by National Statistics Socio-economic Classification.",
+    datasetId: "NM_2079_1",
+    tableCode: "TS062",
+    categoryDimension: "c2021_nssec_10",
+    chartType: "horizontal-bar",
+    excludeTotals: true,
   },
   {
     id: "education-qualification",
@@ -318,6 +354,17 @@ export const TOPIC_CHARTS: TopicChart[] = [
     categoryMode: "detail",
   },
   {
+    id: "family-household-size",
+    slug: "household-size",
+    name: "Household size",
+    description: "Households by number of people in the household.",
+    datasetId: "NM_2037_1",
+    tableCode: "TS017",
+    categoryDimension: "c2021_hhsize_10",
+    chartType: "bar",
+    excludeTotals: true,
+  },
+  {
     id: "migration-country-of-birth",
     slug: "country-of-birth",
     name: "Country of birth",
@@ -361,6 +408,19 @@ export const TOPIC_CHARTS: TopicChart[] = [
     chartType: "bar",
     excludeTotals: true,
   },
+  {
+    id: "migration-english-proficiency",
+    slug: "english-proficiency",
+    name: "Proficiency in English",
+    description:
+      "Usual residents aged 3+ by proficiency in English (English or Welsh in Wales).",
+    datasetId: "NM_2048_1",
+    tableCode: "TS029",
+    categoryDimension: "c2021_engprf_6",
+    chartType: "horizontal-bar",
+    excludeTotals: true,
+    categoryMode: "detail",
+  },
 ];
 
 /** @deprecated Use TOPIC_CHARTS */
@@ -381,12 +441,15 @@ const CHARTS_BY_TOPIC: Record<string, string[]> = {
     "housing-cars",
     "housing-central-heating",
     "housing-bedrooms",
+    "housing-occupancy-bedrooms",
+    "housing-deprivation",
   ],
   employment: [
     "employment-economic-activity",
     "employment-industry",
     "employment-occupation",
     "employment-hours-worked",
+    "employment-ns-sec",
   ],
   education: ["education-qualification", "education-students"],
   "health-and-disability": [
@@ -399,12 +462,14 @@ const CHARTS_BY_TOPIC: Record<string, string[]> = {
     "family-household-composition",
     "family-legal-partnership",
     "family-living-arrangements",
+    "family-household-size",
   ],
   migration: [
     "migration-country-of-birth",
     "migration-indicator",
     "migration-year-of-arrival",
     "migration-length-of-residence",
+    "migration-english-proficiency",
   ],
 };
 

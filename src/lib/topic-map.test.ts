@@ -37,19 +37,22 @@ describe("topic-map helpers", () => {
     ]);
   });
 
-  it("wires Stage 4 subtopics onto every expanded topic", () => {
+  it("wires Stage 4 and follow-on subtopics onto expanded topics", () => {
     expect(getChartsForTopic("housing").map((c) => c.id)).toEqual([
       "housing-tenure",
       "housing-accommodation",
       "housing-cars",
       "housing-central-heating",
       "housing-bedrooms",
+      "housing-occupancy-bedrooms",
+      "housing-deprivation",
     ]);
     expect(getChartsForTopic("employment").map((c) => c.id)).toEqual([
       "employment-economic-activity",
       "employment-industry",
       "employment-occupation",
       "employment-hours-worked",
+      "employment-ns-sec",
     ]);
     expect(getChartsForTopic("education").map((c) => c.id)).toEqual([
       "education-qualification",
@@ -68,12 +71,14 @@ describe("topic-map helpers", () => {
       "family-household-composition",
       "family-legal-partnership",
       "family-living-arrangements",
+      "family-household-size",
     ]);
     expect(getChartsForTopic("migration").map((c) => c.id)).toEqual([
       "migration-country-of-birth",
       "migration-indicator",
       "migration-year-of-arrival",
       "migration-length-of-residence",
+      "migration-english-proficiency",
     ]);
   });
 
@@ -84,7 +89,7 @@ describe("topic-map helpers", () => {
   it("attaches charts to every topic", () => {
     const topics = getTopicsWithCharts();
     expect(topics).toHaveLength(TOPICS.length);
-    expect(TOPIC_CHARTS).toHaveLength(29);
+    expect(TOPIC_CHARTS).toHaveLength(34);
     for (const topic of topics) {
       expect(topic.charts.length).toBeGreaterThan(0);
       for (const chart of topic.charts) {
@@ -100,6 +105,10 @@ describe("topic-map helpers", () => {
     expect(getChartById("employment-industry")?.categoryMode).toBe("summary");
     expect(getChartById("demographics-ethnicity")?.categoryMode).toBe("detail");
     expect(getChartById("health-unpaid-care")?.categoryMode).toBe("detail");
+    expect(getChartById("migration-english-proficiency")?.categoryMode).toBe(
+      "detail",
+    );
+    expect(getChartById("employment-ns-sec")?.chartType).toBe("horizontal-bar");
     expect(getChartById("demographics-gender-identity")?.chartType).toBe(
       "horizontal-bar",
     );
