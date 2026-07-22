@@ -41,6 +41,10 @@ describe("layout components", () => {
     expect(
       screen.getByRole("link", { name: "UK Census Data" }),
     ).toHaveAttribute("href", "/?geography=2013265922");
+    expect(screen.getByRole("link", { name: "Home" })).toHaveAttribute(
+      "href",
+      "/?geography=2013265922",
+    );
     expect(screen.getByRole("link", { name: "Demographics" })).toHaveAttribute(
       "href",
       "/topics/demographics?geography=2013265922",

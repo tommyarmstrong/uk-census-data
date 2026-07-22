@@ -1,12 +1,8 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { TopicCharts } from "@/components/data/topic-charts";
 import { TopicRegionFilter } from "@/components/layout/topic-region-filter";
-import {
-  resolveGeographyFromParam,
-  withGeographyParam,
-} from "@/lib/geography-url";
+import { resolveGeographyFromParam } from "@/lib/geography-url";
 import { getChartsForTopic } from "@/lib/topic-map";
 import { TOPICS } from "@/lib/topics";
 
@@ -37,16 +33,6 @@ export default async function TopicPage({
   return (
     <div className="animate-fade-in flex max-w-3xl flex-col gap-8">
       <div className="flex flex-col gap-3">
-        <p className="text-muted-foreground text-sm">
-          <Link
-            href={withGeographyParam("/", geography.code)}
-            className="hover:text-primary transition-colors"
-          >
-            Home
-          </Link>
-          <span className="text-border mx-2">/</span>
-          <span className="text-foreground">{topic.name}</span>
-        </p>
         <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
           {topic.name}
         </h1>

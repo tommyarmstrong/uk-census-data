@@ -9,21 +9,6 @@ vi.mock("next/navigation", () => ({
   notFound: () => notFound(),
 }));
 
-vi.mock("next/link", () => ({
-  default: ({
-    href,
-    children,
-    ...props
-  }: {
-    href: string;
-    children: React.ReactNode;
-  }) => (
-    <a href={href} {...props}>
-      {children}
-    </a>
-  ),
-}));
-
 vi.mock("@/components/layout/topic-region-filter", () => ({
   TopicRegionFilter: () => <div data-testid="topic-region-filter" />,
 }));
@@ -52,7 +37,7 @@ describe("TopicPage", () => {
     expect(generateStaticParams()).toContainEqual({ slug: "demographics" });
   });
 
-  it("renders the region filter and topic charts", async () => {
+  it("renders the region filter and topic charts without a breadcrumb", async () => {
     const ui = await TopicPage({
       params: Promise.resolve({ slug: "demographics" }),
       searchParams: Promise.resolve({ geography: "2013265922" }),
@@ -62,6 +47,9 @@ describe("TopicPage", () => {
     expect(
       screen.getByRole("heading", { name: "Demographics" }),
     ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: "Home" }),
+    ).not.toBeInTheDocument();
     expect(screen.getByTestId("topic-region-filter")).toBeInTheDocument();
     expect(screen.queryByText(/Showing:/)).not.toBeInTheDocument();
     expect(screen.getByTestId("topic-charts")).toHaveTextContent(

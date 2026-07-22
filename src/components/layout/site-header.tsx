@@ -59,9 +59,15 @@ function SiteHeaderInner() {
         </Link>
 
         <nav
-          className="ml-auto hidden items-center gap-0.5 lg:flex"
+          className="ml-auto hidden min-w-0 items-center gap-0.5 lg:flex"
           aria-label="Main"
         >
+          <Link
+            href={withGeographyParam("/", geoCode)}
+            className={navLinkClass(pathname === "/")}
+          >
+            Home
+          </Link>
           {TOPICS.map((topic) => {
             const href = withGeographyParam(`/topics/${topic.slug}`, geoCode);
             const active = pathname === `/topics/${topic.slug}`;
