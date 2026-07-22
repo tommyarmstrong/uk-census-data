@@ -1,4 +1,4 @@
-# Information Architecture (v1 shell)
+# Information Architecture
 
 Site structure, navigation, region filter, and data-state patterns for the UK Census Data explorer.
 
@@ -8,11 +8,11 @@ Chart inventory lives in [topic-map.md](./topic-map.md). NOMIS details live in [
 
 ## Site map
 
-| Route            | Purpose                                                                                 |
-| ---------------- | --------------------------------------------------------------------------------------- |
-| `/`              | Product intro, selected region label, grid of 8 topics with planned chart names         |
-| `/topics/[slug]` | One topic: breadcrumb, description, region readout, stacked chart slots (1–2 per topic) |
-| `/about`         | About the app, data source, and Open Government Licence                                 |
+| Route            | Purpose                                                                                |
+| ---------------- | -------------------------------------------------------------------------------------- |
+| `/`              | Topic index: emoji tiles for the eight topics (desktop 4×2 grid, mobile single column) |
+| `/topics/[slug]` | One topic: title, description, region filter, subtopic switcher, one live chart panel  |
+| `/about`         | About the app, data source, and Open Government Licence                                |
 
 No auth, no account pages, no local-authority or MSOA drill-down.
 
@@ -21,12 +21,10 @@ flowchart TD
   Home["/ Home"]
   Topic["/topics/slug Topic page"]
   About["/about About"]
-  Home -->|topic cards + nav| Topic
+  Home -->|topic tiles + nav| Topic
   Home --> About
-  Region["Global region filter"]
-  Region --> Home
+  Region["Region filter on topic pages"]
   Region --> Topic
-  Region --> About
 ```
 
 ---
@@ -67,26 +65,26 @@ Shared components under `src/components/data/`:
 
 | State           | When                                    | UI                                                         |
 | --------------- | --------------------------------------- | ---------------------------------------------------------- |
-| **Unavailable** | Chart not connected yet                 | Dashed panel: “Data unavailable” + short note (no numbers) |
+| **Unavailable** | Chart not available for the view        | Dashed panel: “Data unavailable” + short note (no numbers) |
 | **Loading**     | Fetch in flight                         | Skeleton pulse block                                       |
-| **Error**       | NOMIS fail / offline + no cache         | `role="alert"` + Retry; copy that data cannot be fetched   |
-| **Stale**       | Served from cache after network failure | Subtle “Cached / may be stale” badge on success UI         |
+| **Error**       | NOMIS fail / offline + no cache         | `role="alert"`: “Data unavailable” + detail + Retry        |
+| **Stale**       | Served from cache after network failure | Subtle “Cached — may be out of date” badge on success UI   |
 
 Topic charts use Loading / Error / Stale via `CensusChartPanel`.
 
 ---
 
-## Non-goals (shell / v1 charts)
+## Non-goals
 
 - No mock or invented statistics
-- No finer geographies than region / England & Wales
+- No finer geographies than region / England & Wales (see roadmap Stage 6)
 
 ---
 
-## Chart wiring (v1)
+## Chart wiring
 
-All 11 v1 charts (see [topic-map.md](./topic-map.md)) load via `/api/nomis` + `loadCensusSeries`, respect `?geography=`, use browser cache, and render with Recharts (`pie` / `bar` / `horizontal-bar`) plus shared Loading / Error / Stale states.
+All charts in [topic-map.md](./topic-map.md) (20 univariate charts across 8 topics) load via `/api/nomis` + `loadCensusSeries`, respect `?geography=`, use browser cache, and render with Recharts (`pie` / `bar` / `horizontal-bar`) plus shared Loading / Error / Stale states.
 
-**Also in place:** CSV/JSON export per chart; client fetch queue + in-flight dedupe; proxy rate limit; PWA manifest + app-shell service worker (offline = shell + last chart cache only).
+**Also in place:** CSV/JSON export and Share per chart; client fetch queue + in-flight dedupe; proxy rate limit; PWA manifest + app-shell service worker (offline = shell + last chart cache only); v2 design ([design.md](./design.md)).
 
-**Still later:** Acceptance checks doc. Share-on-mobile delivered via chart Share button (Web Share API / clipboard fallback). Branding polish delivered in v2 ([design.md](./design.md)).
+**Still later:** Acceptance checks doc; count/percent measure; cross-tabs; LA/MSOA geography (see [roadmap.md](./roadmap.md)).

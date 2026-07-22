@@ -1,6 +1,6 @@
 # NOMIS Census 2021 — Research Note
 
-Status: **connectivity verified** (2026-07-21). No application code wired yet. Guest access works; no API key required for v1-scale queries.
+Status: **connectivity verified** (2026-07-21); app wired through topic charts and `/api/nomis` (see Implementation status). Guest access works; no API key required for current-scale queries.
 
 Official docs: [https://www.nomisweb.co.uk/api](https://www.nomisweb.co.uk/api)  
 Census 2021 source hub: [https://www.nomisweb.co.uk/sources/census_2021](https://www.nomisweb.co.uk/sources/census_2021)

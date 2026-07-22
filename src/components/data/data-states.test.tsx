@@ -10,7 +10,7 @@ import { DataStaleBadge } from "./data-stale-badge";
 describe("data state components", () => {
   it("renders DataStaleBadge", () => {
     render(<DataStaleBadge />);
-    expect(screen.getByText("Cached / may be stale")).toBeInTheDocument();
+    expect(screen.getByText("Cached — may be out of date")).toBeInTheDocument();
   });
 
   it("renders DataLoading with a label", () => {
@@ -24,13 +24,15 @@ describe("data state components", () => {
   it("renders DataUnavailable with default and custom detail", () => {
     const { rerender } = render(<DataUnavailable />);
     expect(screen.getByText("Data unavailable")).toBeInTheDocument();
-    expect(screen.getByText(/Chart not wired yet/)).toBeInTheDocument();
+    expect(
+      screen.getByText("Live census data is not available for this chart."),
+    ).toBeInTheDocument();
 
     rerender(<DataUnavailable detail="No chart for this topic." />);
     expect(screen.getByText("No chart for this topic.")).toBeInTheDocument();
   });
 
-  it("renders DataError and invokes retry", async () => {
+  it("renders DataError with shared unavailable heading and invokes retry", async () => {
     const user = userEvent.setup();
     const onRetry = vi.fn();
     render(
@@ -42,10 +44,21 @@ describe("data state components", () => {
     );
 
     expect(screen.getByRole("alert")).toBeInTheDocument();
+    expect(screen.getByText("Data unavailable")).toBeInTheDocument();
     expect(screen.getByText("NOMIS is down")).toBeInTheDocument();
     expect(screen.getByText("Try again shortly.")).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "Retry" }));
     expect(onRetry).toHaveBeenCalledTimes(1);
+  });
+
+  it("renders DataError without retry or hint", () => {
+    render(<DataError message="Upstream timeout" />);
+
+    expect(screen.getByRole("alert")).toBeInTheDocument();
+    expect(screen.getByText("Upstream timeout")).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "Retry" }),
+    ).not.toBeInTheDocument();
   });
 });

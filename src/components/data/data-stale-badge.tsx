@@ -13,7 +13,7 @@ export function DataStaleBadge({ className }: DataStaleBadgeProps) {
         className,
       )}
     >
-      Cached / may be stale
+      Cached — may be out of date
     </span>
   );
 }

@@ -22,6 +22,9 @@ type ChartExportActionsProps = {
   className?: string;
 };
 
+const actionButtonClass =
+  "min-h-11 min-w-11 gap-1.5 px-0 sm:min-h-7 sm:min-w-0 sm:px-2.5";
+
 export function ChartExportActions({
   chart,
   series,
@@ -77,7 +80,11 @@ export function ChartExportActions({
   };
 
   return (
-    <div className={cn("flex flex-wrap gap-2", className)}>
+    <div
+      role="group"
+      aria-label={`Export and share ${chart.name}`}
+      className={cn("flex flex-wrap gap-1.5 sm:gap-2", className)}
+    >
       <Button
         type="button"
         variant="outline"
@@ -85,9 +92,10 @@ export function ChartExportActions({
         disabled={disabled}
         onClick={onCsv}
         aria-label={`Export ${chart.name} as CSV`}
+        className={actionButtonClass}
       >
         <Download data-icon="inline-start" />
-        CSV
+        <span className="sr-only sm:not-sr-only">CSV</span>
       </Button>
       <Button
         type="button"
@@ -96,9 +104,10 @@ export function ChartExportActions({
         disabled={disabled}
         onClick={onJson}
         aria-label={`Export ${chart.name} as JSON`}
+        className={actionButtonClass}
       >
         <Download data-icon="inline-start" />
-        JSON
+        <span className="sr-only sm:not-sr-only">JSON</span>
       </Button>
       <Button
         type="button"
@@ -107,9 +116,19 @@ export function ChartExportActions({
         disabled={disabled}
         onClick={() => void onShare()}
         aria-label={`Share ${chart.name}`}
+        className={cn(
+          actionButtonClass,
+          shareLabel === "Copied" && "min-w-0 px-2.5",
+        )}
       >
         <Share2 data-icon="inline-start" />
-        {shareLabel}
+        <span
+          className={
+            shareLabel === "Share" ? "sr-only sm:not-sr-only" : undefined
+          }
+        >
+          {shareLabel}
+        </span>
       </Button>
     </div>
   );

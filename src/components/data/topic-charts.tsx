@@ -24,7 +24,7 @@ export function TopicCharts({ charts, geographyCode }: TopicChartsProps) {
   }
 
   return (
-    <section className="flex flex-col gap-4">
+    <section className="flex flex-col gap-3">
       {charts.length > 1 ? (
         <nav aria-label="Charts on this page" className="flex flex-wrap gap-2">
           {charts.map((chart) => {
@@ -37,7 +37,7 @@ export function TopicCharts({ charts, geographyCode }: TopicChartsProps) {
                 aria-pressed={active}
                 onClick={() => setSelectedId(chart.id)}
                 className={cn(
-                  "rounded-md px-3 py-1.5 text-xs transition-colors duration-200",
+                  "min-h-11 rounded-md px-3.5 text-sm transition-colors duration-200 sm:min-h-0 sm:px-3 sm:py-1.5 sm:text-xs",
                   active
                     ? "bg-primary text-primary-foreground"
                     : "bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground",

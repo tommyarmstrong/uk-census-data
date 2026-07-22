@@ -31,8 +31,8 @@ export default async function TopicPage({
   const charts = getChartsForTopic(topic.slug);
 
   return (
-    <div className="animate-fade-in flex max-w-3xl flex-col gap-8">
-      <div className="flex flex-col gap-3">
+    <div className="animate-fade-in flex max-w-3xl flex-col gap-5 sm:gap-6">
+      <div className="flex flex-col gap-2.5 sm:gap-3">
         <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
           {topic.name}
         </h1>

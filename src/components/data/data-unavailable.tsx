@@ -8,10 +8,10 @@ type DataUnavailableProps = {
   detail?: ReactNode;
 };
 
-/** Chart / series not wired yet — never invent figures. */
+/** Chart / series not available — never invent figures. */
 export function DataUnavailable({
   className,
-  detail = "Chart not wired yet. Live NOMIS data will appear here when connected.",
+  detail = "Live census data is not available for this chart.",
 }: DataUnavailableProps) {
   return (
     <div

@@ -200,4 +200,33 @@ describe("ChartExportActions", () => {
     expect(getByRole("button", { name: /Export Sex as JSON/i })).toBeDisabled();
     expect(getByRole("button", { name: /Share Sex/i })).toBeDisabled();
   });
+
+  it("keeps labelled controls accessible while hiding visible labels on narrow layouts", () => {
+    render(
+      <ChartExportActions
+        chart={SAMPLE_CHART}
+        series={SAMPLE_SERIES}
+        data={DATA}
+      />,
+    );
+
+    expect(
+      screen.getByRole("group", { name: /Export and share Sex/i }),
+    ).toBeInTheDocument();
+
+    const csv = screen.getByRole("button", { name: /Export Sex as CSV/i });
+    const json = screen.getByRole("button", { name: /Export Sex as JSON/i });
+    const share = screen.getByRole("button", { name: /Share Sex/i });
+
+    expect(csv.className).toMatch(/min-h-11/);
+    expect(json.className).toMatch(/min-h-11/);
+    expect(share.className).toMatch(/min-h-11/);
+
+    expect(csv.querySelector("span")).toHaveClass("sr-only", "sm:not-sr-only");
+    expect(json.querySelector("span")).toHaveClass("sr-only", "sm:not-sr-only");
+    expect(share.querySelector("span")).toHaveClass(
+      "sr-only",
+      "sm:not-sr-only",
+    );
+  });
 });

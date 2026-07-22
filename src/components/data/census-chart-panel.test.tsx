@@ -66,7 +66,9 @@ describe("CensusChartPanel", () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText("Cached / may be stale")).toBeInTheDocument();
+      expect(
+        screen.getByText("Cached — may be out of date"),
+      ).toBeInTheDocument();
     });
     expect(screen.getByText(/Browser cache/)).toBeInTheDocument();
   });

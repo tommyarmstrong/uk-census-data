@@ -42,10 +42,9 @@ describe("TopicCharts", () => {
     render(<TopicCharts charts={CHARTS} geographyCode="2013265922" />);
 
     expect(screen.getByTestId("chart-slot")).toHaveTextContent("Sex");
-    expect(screen.getByRole("button", { name: "Sex" })).toHaveAttribute(
-      "aria-pressed",
-      "true",
-    );
+    const sexButton = screen.getByRole("button", { name: "Sex" });
+    expect(sexButton).toHaveAttribute("aria-pressed", "true");
+    expect(sexButton.className).toMatch(/min-h-11/);
 
     await user.click(
       screen.getByRole("button", { name: "Age (five-year bands)" }),

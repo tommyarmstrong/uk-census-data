@@ -24,7 +24,7 @@ export function DataError({
         className,
       )}
     >
-      <p className="text-sm font-medium">Data cannot be fetched</p>
+      <p className="text-sm font-medium">Data unavailable</p>
       <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
         {message}
       </p>

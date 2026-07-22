@@ -42,7 +42,7 @@ describe("TopicPage", () => {
       params: Promise.resolve({ slug: "demographics" }),
       searchParams: Promise.resolve({ geography: "2013265922" }),
     });
-    render(ui);
+    const { container } = render(ui);
 
     expect(
       screen.getByRole("heading", { name: "Demographics" }),
@@ -55,6 +55,7 @@ describe("TopicPage", () => {
     expect(screen.getByTestId("topic-charts")).toHaveTextContent(
       "Sex|Age (five-year bands)",
     );
+    expect(container.firstChild).toHaveClass("gap-5");
   });
 
   it("renders a single-chart topic without error", async () => {
