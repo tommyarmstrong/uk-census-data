@@ -33,7 +33,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
               >
                 {topic.emoji}
               </span>
-              <span className="text-foreground group-hover:text-primary text-base font-medium transition-colors lg:shrink-0 lg:text-base xl:text-lg">
+              <span className="font-heading text-foreground group-hover:text-primary text-base font-semibold tracking-tight transition-colors lg:shrink-0 lg:text-xl xl:text-2xl">
                 {topic.name}
               </span>
             </Link>
