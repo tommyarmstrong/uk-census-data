@@ -917,3 +917,108 @@ Done.
 1. Home — removed the body “UK Census Data” heading; kept the short intro line
    2.Desktop tiles — emoji scales with viewport height (clamp) and fills the tile with flex-1 / justify-evenly
 2. Share — button beside CSV/JSON; uses the system share sheet when available, otherwise copies the page URL (label briefly shows “Copied”)
+
+## Sprint 3
+
+Deliverables:
+
+1.
+
+### Prompt 1
+
+Model: Cursor Auto (Plan)
+
+Context window: **NEW**
+
+Prompt:
+
+What should be the next steps for the uk-census-data app?
+
+Remaining steps include:
+
+- Adding additional subtopics
+- Improving the design
+- Tidying the graphs, where text is overlapping or unreadable
+
+What other areas should be improved and how should these steps be staged for an AI agent to develop?
+
+Plan this put fo rme without making any code changes yet.
+
+Outputs:
+
+Staged roadmap documented in [docs/roadmap.md](./roadmap.md) (Stages 1–6: chart readability → design polish → percent → more charts → cross-tabs → geography). Stage 1 agent prompt included in that doc.
+
+### Prompt 2 (Stage 1 — chart readability)
+
+Model: Cursor Auto
+
+Context window: **NEW**
+
+Prompt:
+
+Implement Stage 1 from docs/roadmap.md: chart readability for the existing 20 Census charts.
+
+Context:
+
+- Charts render in src/components/charts/census-chart-view.tsx (pie / bar / horizontal-bar).
+- Inventory is docs/topic-map.md and src/lib/topic-map.ts.
+- Design tokens and chart colours stay as in docs/design.md — this is presentation polish only.
+
+Goals:
+
+- Make every existing chart readable at ~375px and ~1280px widths.
+- Fix overlapping, crushed, or truncated-to-useless axis/legend labels.
+- Prefer horizontal-bar (or equivalent) on narrow viewports where vertical angled ticks fail.
+- Truncate long category labels on axes; show the full NOMIS label in the tooltip (and keep exports using clear labels).
+- Fix pie legend overflow/clipping where needed.
+- Add or extend a small shared label-formatting helper if that keeps the chart component clean.
+
+Constraints:
+
+- No new datasets, topics, routes, or IA changes.
+- No mock/invented data.
+- No full visual redesign — only chart label/layout readability.
+- Keep existing unit tests passing; add/adjust tests for any new label helpers.
+
+Process:
+
+1. Briefly list the worst offenders you will fix (from code + fixtures if useful).
+2. Implement the fixes.
+3. Run npm run test:run.
+4. Summarise what changed, which charts remain imperfect, and any follow-ups for Stage 2.
+
+Do not start Stages 2–6.
+
+Outcome:
+
+Stage 1 is done. All unit tests pass (npm run test:run).
+
+**Worst offenders targeted**
+
+- Ethnic group, household composition, disability, legal partnership — long Parent: Child Y-axis labels
+- Industry, economic activity, travel method/distance — many horizontal rows, squeezed axes
+- Age, country of birth, year of arrival — dense vertical bars with crushed angled ticks
+- Migrant-indicator pie — legend clipped by fixed 36px height
+
+**What changed**
+
+- Added src/lib/charts/format-label.ts: leaf-after-colon shortening, truncation, axis width estimate, dense-bar threshold (≥9 categories)
+- Horizontal bars: truncated Y ticks, dynamic axis width, slightly taller rows; full NOMIS label still in tooltip
+- Vertical bars: same truncation; auto-flip to horizontal on narrow viewports or when dense
+- Pies: wrapping custom legend, dynamic height, more room for the donut; full label via tooltip/title
+- Exports unchanged (still use full observation labels)
+
+### Prompt 3
+
+Model: Cursor Auto
+
+Context window: **EXISTING**
+
+Prompt:
+
+Ensure there is high test coverage for these changes.
+
+Then, if the tests run pass, commit and push the code.
+
+Outcome:
+
