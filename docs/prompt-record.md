@@ -2,7 +2,19 @@
 
 NEVER EDIT THIS FILE WITHOUT EXPLICIT PERMISSION. THIS IS IMPORTANT.
 
-## Prompt 1
+## Sprint 1
+
+Deliverables:
+
+1. Scaffold the project
+2. Build initial app layout
+3. Set top-level topics and example subtopics
+4. Research and implement NOMIS API
+5. Wire NOMIS to every topic
+6. Deploy to Vercel
+7. Implement unit tests
+
+### Prompt 1
 
 Model: Cursor Auto
 
@@ -37,7 +49,7 @@ An agent could scaffold the stack and wire a NOMIS fetch, but it would have to i
 
 **Recommendation before handing to an agent**: add (1) a closed list of Census 2021 topics/datasets for v1, (2) a one-screen IA / user flow, (3) geography levels + defaults, (4) 5–10 acceptance checks, and (5) a PWA/offline decision. With those, this doc becomes a solid build prompt; without them, treat it as a direction brief, not a complete requirements package.
 
-## Prompt 2
+### Prompt 2
 
 Model: Cursor Auto
 
@@ -110,7 +122,7 @@ Prompt habit: each stage prompt should say what to deliver, what not to invent (
 
 With this approach, the requirements doc is enough as a north star; the staged prompts supply the missing detail as you go.
 
-## Prompt 3
+### Prompt 3
 
 Model: Cursor Auto
 
@@ -134,7 +146,7 @@ Outcome:
 
 Basic file layouts were created but the agent possibly on installing packages with node.
 
-## Prompt 4
+### Prompt 4
 
 Model: Cursor Auto
 
@@ -157,7 +169,7 @@ After the cancel, there is no package-lock.json and next is not installed — th
 
 Want me to finish from here (run npm install, then add shadcn / Prettier / Husky and the layout shell)?
 
-## Prompt 5
+### Prompt 5
 
 Model: Cursor Auto
 
@@ -182,7 +194,7 @@ Who should install
 
 Given the earlier hang, I’d run `npm install` yourself once in this repo, then let the agent continue with shadcn / Prettier / Husky / layout. After that, smaller `npm install <pkg>` steps are usually fine for the agent.
 
-## Manual Step
+### Manual Step
 
 Executed `npm install` to install packages. This added 362 packages, and audited 363 packages in 2m. There were 2 moderate severity vulnerabilities.
 
@@ -210,7 +222,7 @@ npm ERR! this command with --force or --legacy-peer-deps
 npm ERR! to accept an incorrect (and potentially broken) dependency resolution.
 ```
 
-## Prompt 6
+### Prompt 6
 
 Model: Cursor Auto
 
@@ -264,7 +276,7 @@ npm run dev
 
 About npm audit fix: on a fresh Next app, ignore it unless you’re shipping something security-critical. It often “fixes” by changing major versions and creates exactly this kind of conflict. Revisit audits later once the app is stable.
 
-## Prompt 7
+### Prompt 7
 
 Model: Cursor Auto
 
@@ -312,7 +324,7 @@ Bottom line: the app can run fine with this. Fix only if the console points at y
 
 Want me to apply that layout change as part of finishing the scaffold?
 
-## Prompt 8
+### Prompt 8
 
 Model: Cursor Auto
 
@@ -351,7 +363,7 @@ Your Node is 20.11.1; some packages prefer ≥20.19. Things work now, but upgrad
 
 When you’re happy with the shell, we can move on to NOMIS research next.
 
-## Prompt 9
+### Prompt 9
 
 Model: Cursor Auto
 
@@ -404,7 +416,7 @@ Output:
 
 If that sequencing looks right, we can move to the data-layer spike next.
 
-## Prompt 10
+### Prompt 10
 
 Model: Cursor Auto
 
@@ -459,7 +471,7 @@ Topic pages list planned charts as “data unavailable” placeholders (not fake
 
 If the v1 set looks right, next stage is IA + shell (region filter, loading/error states), then a vertical slice wiring one chart end-to-end.
 
-## Prompt 11
+### Prompt 11
 
 Model: Cursor Auto (Plan)
 
@@ -485,7 +497,7 @@ The `docs/ia.md` was created, with the plan. Cursor offered a "Build locally" op
 
 This added the basic Information Architecture.
 
-## Prompt 11
+### Prompt 12
 
 Model: Cursor Auto
 
@@ -510,7 +522,7 @@ Open `/topics/demographics?geography=2013265922` — Sex pie + Age bar should lo
 
 Export (CSV/JSON) and PWA polish are still later stages.
 
-## Prompt 12
+### Prompt 13
 
 Model: Cursor Auto
 
@@ -533,7 +545,7 @@ Core v1 is in place (scaffold → NOMIS → IA/shell → all 11 charts). Sensibl
 
 Optional later: deferred topic-map charts (ethnicity, disability, etc.), drop or fold `/spike` once you’re happy charts are proven.
 
-## Prompt 12
+## Prompt 14
 
 Model: Cursor Auto
 
@@ -568,7 +580,7 @@ Every chart has CSV and JSON download buttons (readable category labels, geograp
 
 Install from the browser on HTTPS (e.g. Vercel). Service worker does not register in next dev.
 
-## Prompt 12
+### Prompt 15
 
 Model: Cursor Auto
 
@@ -590,7 +602,7 @@ Removed:
 
 Historical mentions in prompt-record.md / observations.md are left as-is.
 
-## Prompt 13
+### Prompt 16
 
 Model: Cursor Auto
 
@@ -621,3 +633,78 @@ Done. Here’s what changed:
 2. Dropdown labels — shows names via Base UI items (not NOMIS codes)
 3. Order — England and Wales → England → Wales → English regions A–Z
 4. About — /about in desktop + mobile menus, with Open Government Licence v3.0 attribution for the Census/NOMIS data
+
+### Prompt 17
+
+Model: Cursor Auto
+
+Context window: **EXISTING**
+
+Prompt:
+
+Scaffold unit tests using a runner and React helpers (using Vitest)
+
+Outcome:
+
+Vitest is scaffolded and 15 tests pass.
+
+**Setup**
+
+- Deps: vitest, @vitejs/plugin-react@4, jsdom, Testing Library (react, jest-dom, user-event), vite-tsconfig-paths
+- Config: vitest.config.ts (jsdom + @/ path aliases)
+- Setup: src/test/setup.ts (@testing-library/jest-dom)
+- Scripts: npm test (watch) · npm run test:run (CI)
+
+**Seed tests**
+
+| File                      | Covers                          |
+| ------------------------- | ------------------------------- |
+| geography-url.test.ts     | URL geography resolution        |
+| parse-jsonstat.test.ts    | NOMIS JSON-stat parsing         |
+| chart-data.test.ts        | Total filtering / chart mapping |
+| download.test.ts          | CSV/JSON export helpers         |
+| data-stale-badge.test.tsx | Sample React component test     |
+
+Add new tests as *.test.ts / *.test.tsx next to the code under src/.
+
+### Prompt 18
+
+Model: Cursor Auto
+
+Context window: **EXISTING**
+
+Prompt:
+
+Implement full test coverage for the existing code. then run all of the tests.
+
+Output:
+
+97 tests passed across 24 files — 99.21% statement coverage on app code.
+
+**Commands**
+
+- npm test — watch mode
+- npm run test:run — single run
+- npm run test:coverage — run + coverage report
+
+**What’s covered**
+
+Lib (NOMIS client/cache/queue/rate-limit/parse/constants, geography, topics, export, utils), API route, pages (home/about/topic/manifest), data/layout/chart/PWA components. shadcn UI primitives and `layout.tsx` (Next fonts) are excluded from coverage targets.
+
+**Remaining gaps (~0.8%)**
+
+Mostly hard-to-hit branches: effect cancel races in CensusChartPanel, a rare AsyncQueue timer race, and a few defensive fallbacks.
+
+## Sprint 2
+
+Deliverables:
+
+1.
+
+### Prompt 1
+
+Model: Cursor Auto
+
+Context window: **NEW**
+
+Prompt:

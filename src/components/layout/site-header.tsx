@@ -172,3 +172,6 @@ export function SiteHeader() {
     </Suspense>
   );
 }
+
+/** Exported for unit tests of the Suspense fallback chrome. */
+export { HeaderFallback };

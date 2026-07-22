@@ -36,7 +36,7 @@ type CensusChartViewProps = {
   className?: string;
 };
 
-function ChartTooltip({
+export function ChartTooltip({
   active,
   payload,
 }: {
