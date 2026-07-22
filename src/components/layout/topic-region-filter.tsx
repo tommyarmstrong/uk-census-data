@@ -5,13 +5,7 @@ import { Suspense } from "react";
 import { RegionFilter } from "@/components/layout/region-filter";
 
 function TopicRegionFilterInner() {
-  return (
-    <RegionFilter
-      id="region-filter-topic"
-      className="w-full max-w-md"
-      fullWidth
-    />
-  );
+  return <RegionFilter id="region-filter-topic" />;
 }
 
 function TopicRegionFilterFallback() {

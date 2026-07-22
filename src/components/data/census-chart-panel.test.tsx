@@ -49,6 +49,7 @@ describe("CensusChartPanel", () => {
     await waitFor(() => {
       expect(screen.getByText(/Live network/)).toBeInTheDocument();
     });
+    expect(screen.getByRole("heading", { name: "Sex" })).toBeInTheDocument();
     expect(screen.getByTestId("chart-view")).toHaveTextContent("pie");
     expect(screen.getByTestId("export-actions")).toBeInTheDocument();
   });

@@ -84,13 +84,19 @@ export function CensusChartPanel({
 
   if (status.kind === "loading") {
     return (
-      <DataLoading className="mt-4 h-72" label={`Loading ${chart.name}`} />
+      <div className="flex flex-col gap-3">
+        <h3 className="text-base font-medium tracking-tight">{chart.name}</h3>
+        <DataLoading className="h-72" label={`Loading ${chart.name}`} />
+      </div>
     );
   }
 
   if (status.kind === "error") {
     return (
-      <DataError className="mt-4" message={status.message} onRetry={onRetry} />
+      <div className="flex flex-col gap-3">
+        <h3 className="text-base font-medium tracking-tight">{chart.name}</h3>
+        <DataError message={status.message} onRetry={onRetry} />
+      </div>
     );
   }
 
@@ -98,23 +104,38 @@ export function CensusChartPanel({
     excludeTotals: chart.excludeTotals,
   });
   const data = toChartData(observations);
+  const fetchedLabel = new Date(status.series.fetchedAt).toLocaleString(
+    "en-GB",
+  );
+  const sourceLabel =
+    status.source === "network" ? "Live network" : "Browser cache";
 
   return (
-    <div className="mt-5 flex flex-col gap-3">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="text-muted-foreground flex flex-wrap items-center gap-2 text-xs leading-relaxed">
-          <span>
-            {status.source === "network" ? "Live network" : "Browser cache"}
-            {" · "}
-            {status.series.geographyLabel}
-            {" · "}
-            fetched {new Date(status.series.fetchedAt).toLocaleString("en-GB")}
-          </span>
-          {status.stale ? <DataStaleBadge /> : null}
-        </div>
-        <ChartExportActions chart={chart} series={status.series} data={data} />
+    <div className="flex flex-col gap-3">
+      <div className="flex items-start justify-between gap-3">
+        <h3 className="min-w-0 text-base font-medium tracking-tight">
+          {chart.name}
+        </h3>
+        <ChartExportActions
+          chart={chart}
+          series={status.series}
+          data={data}
+          className="shrink-0"
+        />
       </div>
+
       <CensusChartView chartType={chart.chartType} data={data} />
+
+      <div className="text-muted-foreground flex flex-wrap items-center gap-2 text-xs leading-relaxed">
+        <span>
+          {sourceLabel}
+          {" · "}
+          {status.series.geographyLabel}
+          {" · "}
+          fetched {fetchedLabel}
+        </span>
+        {status.stale ? <DataStaleBadge /> : null}
+      </div>
     </div>
   );
 }

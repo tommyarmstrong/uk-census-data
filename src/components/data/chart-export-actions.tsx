@@ -12,17 +12,20 @@ import {
   seriesToCsv,
   seriesToJson,
 } from "@/lib/export/download";
+import { cn } from "@/lib/utils";
 
 type ChartExportActionsProps = {
   chart: TopicChart;
   series: CensusSeries;
   data: ChartDatum[];
+  className?: string;
 };
 
 export function ChartExportActions({
   chart,
   series,
   data,
+  className,
 }: ChartExportActionsProps) {
   const basename = buildExportBasename(chart, series);
   const disabled = data.length === 0;
@@ -44,7 +47,7 @@ export function ChartExportActions({
   };
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className={cn("flex flex-wrap gap-2", className)}>
       <Button
         type="button"
         variant="outline"

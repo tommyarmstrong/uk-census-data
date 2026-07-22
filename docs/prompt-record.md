@@ -873,3 +873,37 @@ Done.
 1. Home — no region filter (global bar removed); “Showing: …” copy removed too
 2. Topic pages — region filter sits where “Showing: …” was
 3. Charts subheading removed; subtopic buttons remain as before
+
+### Prompt 7
+
+Model: Cursor Auto
+
+Context window: **EXISTING**
+
+Prompt:
+
+Implement the following:
+
+1. The Region filter box should be shorter. It only needs to fir "Yorkshire and The Humber".
+
+2. Move unecessary text from the chart boxes:
+
+- Move "Live network · England and Wales · fetched 22/07/2026, 03:02:08" to small grey text outside and underneath of the chart
+- Remove "Usual residents by sex." and similar from all charts.
+- Remove "(TS008 · pie)" and similar text.
+
+3. Place the CSV and JSON buttons in the top right of the chart.
+
+4. Remove "Installable as an app; offline uses last cached chart data only." from the footer.
+
+### Prompt 8
+
+Model: Cursor Auto
+
+Context window: **EXISTING**
+
+Prompt:
+
+1. Remove "UK Census Data" from the body of the home page. this is already in the header, so adds no value.
+
+2. Make tke the emojis and the text fill the tiles on the home page in desktop view. This is already ok on mobile.

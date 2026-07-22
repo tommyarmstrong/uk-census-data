@@ -33,6 +33,7 @@ describe("layout components", () => {
       "href",
       "https://www.nomisweb.co.uk/",
     );
+    expect(screen.queryByText(/Installable as an app/)).not.toBeInTheDocument();
   });
 
   it("renders SiteHeader brand and topic links with geography", () => {

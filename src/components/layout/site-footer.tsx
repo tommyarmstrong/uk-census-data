@@ -12,8 +12,7 @@ export function SiteFooter() {
           >
             NOMIS
           </a>{" "}
-          (ONS). Installable as an app; offline uses last cached chart data
-          only.
+          (ONS).
         </p>
       </div>
     </footer>

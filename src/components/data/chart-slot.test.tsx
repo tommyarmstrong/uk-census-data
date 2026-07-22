@@ -11,12 +11,14 @@ vi.mock("@/components/data/census-chart-panel", () => ({
 }));
 
 describe("ChartSlot", () => {
-  it("renders chart metadata and the panel", () => {
+  it("renders the bordered panel without chart copy chrome", () => {
     render(<ChartSlot chart={SAMPLE_CHART} geographyCode="2013265922" />);
 
-    expect(screen.getByRole("heading", { level: 3 })).toHaveTextContent("Sex");
-    expect(screen.getByText(/TS008/)).toBeInTheDocument();
-    expect(screen.getByText(SAMPLE_CHART.description)).toBeInTheDocument();
+    expect(screen.queryByRole("heading")).not.toBeInTheDocument();
+    expect(screen.queryByText(/TS008/)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(SAMPLE_CHART.description),
+    ).not.toBeInTheDocument();
     expect(screen.getByTestId("panel")).toHaveTextContent("2013265922");
   });
 });

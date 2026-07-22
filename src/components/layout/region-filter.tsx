@@ -21,16 +21,16 @@ const SELECTABLE_ITEMS = Object.fromEntries(
   SELECTABLE_GEOGRAPHIES.map((option) => [option.code, option.name]),
 );
 
+/** Wide enough for the longest region name (“Yorkshire and The Humber”). */
+const REGION_TRIGGER_WIDTH = "w-[15rem]";
+
 type RegionFilterProps = {
   className?: string;
-  /** Stretch trigger to full width (e.g. mobile sheet). */
-  fullWidth?: boolean;
   id?: string;
 };
 
 export function RegionFilter({
   className,
-  fullWidth = false,
   id = "region-filter",
 }: RegionFilterProps) {
   const router = useRouter();
@@ -66,11 +66,7 @@ export function RegionFilter({
         <SelectTrigger
           id={id}
           size="sm"
-          className={cn(
-            "min-h-11 sm:min-h-8",
-            fullWidth && "w-full min-w-0",
-            !fullWidth && "max-w-56",
-          )}
+          className={cn("min-h-11 sm:min-h-8", REGION_TRIGGER_WIDTH)}
           aria-label="Select region"
         >
           <SelectValue placeholder="Select region" />

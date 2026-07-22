@@ -8,7 +8,7 @@ type ChartSlotProps = {
   className?: string;
 };
 
-/** Chart panel wired to NOMIS for the selected region. */
+/** Bordered chart panel wired to NOMIS for the selected region. */
 export function ChartSlot({ chart, geographyCode, className }: ChartSlotProps) {
   return (
     <div
@@ -18,17 +18,6 @@ export function ChartSlot({ chart, geographyCode, className }: ChartSlotProps) {
         className,
       )}
     >
-      <div className="flex flex-col gap-1.5">
-        <h3 className="text-base font-medium tracking-tight">
-          {chart.name}{" "}
-          <span className="text-muted-foreground font-sans text-sm font-normal">
-            ({chart.tableCode} · {chart.chartType})
-          </span>
-        </h3>
-        <p className="text-muted-foreground text-sm leading-relaxed">
-          {chart.description}
-        </p>
-      </div>
       <CensusChartPanel
         key={`${chart.id}-${geographyCode}`}
         chart={chart}
