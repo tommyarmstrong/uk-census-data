@@ -35,7 +35,7 @@ flowchart TD
 
 - **Brand** → Home
 - **Primary nav**: eight topics from `src/lib/topics.ts`, plus **About** (desktop links + mobile sheet)
-- **Global region filter** in the header (desktop: near brand / before topic links; mobile: in the sheet + compact control)
+- **Region filter** on **topic pages only** (replaces the former global bar / “Showing: …” line)
 - **Footer**: Census 2021 / NOMIS attribution
 
 ---
@@ -54,11 +54,11 @@ flowchart TD
 
 1. Breadcrumb: Home / Topic name
 2. Title + short description
-3. “Showing: {region name}” (header region control is the source of truth)
-4. Chart slots — one panel per v1 chart from the topic map: title, table code, chart-type hint, live NOMIS chart (or loading/error/stale)
-5. In-page anchors when a topic has two charts
+3. Region filter (URL `?geography=` source of truth)
+4. Subtopic buttons when a topic has multiple charts — first chart is the default
+5. One live chart panel at a time (switching buttons replaces the chart; no stacked charts)
 
-Home is a topic index, not a dashboard of KPIs.
+Home is a topic index (emoji tiles; desktop 4×2 square grid, mobile single column), not a dashboard of KPIs. No region filter on home.
 
 ---
 

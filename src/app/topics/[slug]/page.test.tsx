@@ -24,9 +24,20 @@ vi.mock("next/link", () => ({
   ),
 }));
 
-vi.mock("@/components/data/chart-slot", () => ({
-  ChartSlot: ({ chart }: { chart: { name: string } }) => (
-    <li data-testid="chart-slot">{chart.name}</li>
+vi.mock("@/components/layout/topic-region-filter", () => ({
+  TopicRegionFilter: () => <div data-testid="topic-region-filter" />,
+}));
+
+vi.mock("@/components/data/topic-charts", () => ({
+  TopicCharts: ({
+    charts,
+  }: {
+    charts: Array<{ name: string }>;
+    geographyCode: string;
+  }) => (
+    <div data-testid="topic-charts">
+      {charts.map((chart) => chart.name).join("|")}
+    </div>
   ),
 }));
 
@@ -41,7 +52,7 @@ describe("TopicPage", () => {
     expect(generateStaticParams()).toContainEqual({ slug: "demographics" });
   });
 
-  it("renders charts and in-page navigation for multi-chart topics", async () => {
+  it("renders the region filter and topic charts", async () => {
     const ui = await TopicPage({
       params: Promise.resolve({ slug: "demographics" }),
       searchParams: Promise.resolve({ geography: "2013265922" }),
@@ -51,24 +62,23 @@ describe("TopicPage", () => {
     expect(
       screen.getByRole("heading", { name: "Demographics" }),
     ).toBeInTheDocument();
-    expect(screen.getByText("North West")).toBeInTheDocument();
-    expect(
-      screen.getByRole("navigation", { name: "Charts on this page" }),
-    ).toBeInTheDocument();
-    expect(screen.getAllByTestId("chart-slot")).toHaveLength(2);
+    expect(screen.getByTestId("topic-region-filter")).toBeInTheDocument();
+    expect(screen.queryByText(/Showing:/)).not.toBeInTheDocument();
+    expect(screen.getByTestId("topic-charts")).toHaveTextContent(
+      "Sex|Age (five-year bands)",
+    );
   });
 
-  it("renders charts without in-page nav for single-chart topics", async () => {
+  it("renders a single-chart topic without error", async () => {
     const ui = await TopicPage({
       params: Promise.resolve({ slug: "education" }),
       searchParams: Promise.resolve({}),
     });
     render(ui);
 
-    expect(
-      screen.queryByRole("navigation", { name: "Charts on this page" }),
-    ).not.toBeInTheDocument();
-    expect(screen.getAllByTestId("chart-slot")).toHaveLength(1);
+    expect(screen.getByTestId("topic-charts")).toHaveTextContent(
+      "Highest qualification",
+    );
   });
 
   it("calls notFound for unknown topics", async () => {

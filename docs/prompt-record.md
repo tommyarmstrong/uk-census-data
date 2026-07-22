@@ -783,3 +783,93 @@ Context window: **EXISTING**
 
 Prompt:
 
+Implement these layout changes:
+
+1. In desktop view the tiles on the home page should be square in shape, in 4 columns and 2 rows. Mobile should remain rectangular in a single column of 8 rows.
+
+2. In desktop view the Region filter should siut below the header. The header should be "UK Census Data", the topics and About.
+
+3. Do not display every subtopic chart. Only display one. Maintain the subtopic buttons (e.g. Sex, Age) display the chart for th first subtopic as the default but replace that chart when a different button is selected.
+
+4. The tiles on the home page should each have graphics, these can be emojis.
+
+Output:
+
+All four layout changes are in. 100 tests pass.
+
+1. Home tiles — emoji on each topic; desktop lg:grid-cols-4 with aspect-square (4×2); mobile single-column rectangular cards
+2. Region filter — sticky bar below the header; header is brand + topics + About only
+3. Topic charts — TopicCharts switcher shows one chart at a time; first subtopic is default; buttons replace the chart
+4. Emojis — same set as the original app (👥 🏠 💼 🎓 🏥 🚗 👨‍👩‍👧‍👦 🌍)
+
+### Prompt 4
+
+Model: Cursor Auto
+
+Context window: **EXISTING**
+
+Prompt:
+
+In the home page tiles, make the follwoing changes:
+
+- Make the emojis bigger - they are the focus not the text
+- center align the emojis and the text
+- remove the text describing the subtopics (e.g. "Sex · Age (five-year bands)")
+- The emoji and the text should fill the tile
+- a hover over should subtley change the background color of the tile - perhaps even subtely increasing the size of the tile or highlighting the tile border
+
+Output:
+
+Home tiles updated:
+
+- Large centered emoji (text-6xl / lg:text-7xl) with topic name only
+- Subtopic labels and descriptions removed
+- Content centered and filling the tile
+- Hover: soft accent background, stronger teal border, slight scale-up (1.02) and shadow
+
+### Prompt 5
+
+Model: Cursor Auto
+
+Context window: **EXISTING**
+
+Prompt:
+
+In the home page make these edits:
+
+1. Remove "Topics
+   Charts per topic, filtered by the selected region."
+
+2. Remove "Charts load live from NOMIS for the selected geography."
+
+3. On desktop, ensure all 8 tile appear on the page without scrolling down. Scroll is acceptable on mobile screens.
+
+Outputs:
+
+Done.
+
+1. Removed the Topics heading and subtitle
+2. Shortened the intro (dropped the NOMIS sentence)
+3. Desktop: home uses a viewport-height layout with a 4×2 grid that fills remaining space so all 8 tiles fit without scrolling; mobile still scrolls as a single column
+
+### Prompt 6
+
+Model: Cursor Auto
+
+Context window: **EXISTING**
+
+Prompt:
+
+1. Remove the "Region" filter from the Home page -- it adds nothing there.
+
+2. Move the region filter to the topic pages. It should replace the section that states, for example, "Showing: England and Wales".
+
+3. Remove the "Charts" subheading on the topic pages.
+
+Output:
+
+Done.
+
+1. Home — no region filter (global bar removed); “Showing: …” copy removed too
+2. Topic pages — region filter sits where “Showing: …” was
+3. Charts subheading removed; subtopic buttons remain as before

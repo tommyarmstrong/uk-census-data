@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { ChartSlot } from "@/components/data/chart-slot";
+import { TopicCharts } from "@/components/data/topic-charts";
+import { TopicRegionFilter } from "@/components/layout/topic-region-filter";
 import {
   resolveGeographyFromParam,
   withGeographyParam,
@@ -52,38 +53,10 @@ export default async function TopicPage({
         <p className="text-muted-foreground text-base leading-relaxed">
           {topic.description}
         </p>
-        <p className="text-sm">
-          Showing:{" "}
-          <span className="text-foreground font-medium">{geography.name}</span>
-        </p>
+        <TopicRegionFilter />
       </div>
 
-      {charts.length > 1 ? (
-        <nav aria-label="Charts on this page" className="flex flex-wrap gap-2">
-          {charts.map((chart) => (
-            <a
-              key={chart.id}
-              href={`#${chart.slug}`}
-              className="bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground rounded-md px-3 py-1.5 text-xs transition-colors duration-200"
-            >
-              {chart.name}
-            </a>
-          ))}
-        </nav>
-      ) : null}
-
-      <section className="flex flex-col gap-4">
-        <h2 className="text-xl font-semibold tracking-tight">Charts</h2>
-        <ul className="flex flex-col gap-5">
-          {charts.map((chart) => (
-            <ChartSlot
-              key={chart.id}
-              chart={chart}
-              geographyCode={geography.code}
-            />
-          ))}
-        </ul>
-      </section>
+      <TopicCharts charts={charts} geographyCode={geography.code} />
     </div>
   );
 }

@@ -22,12 +22,6 @@ vi.mock("next/link", () => ({
   ),
 }));
 
-vi.mock("@/components/layout/region-filter", () => ({
-  RegionFilter: ({ id }: { id?: string }) => (
-    <div data-testid={id ?? "region-filter"} />
-  ),
-}));
-
 import { SiteFooter } from "./site-footer";
 import { HeaderFallback, SiteHeader } from "./site-header";
 import { SiteShell } from "./site-shell";
@@ -58,7 +52,7 @@ describe("layout components", () => {
     expect(screen.getByText("UK Census Data")).toBeInTheDocument();
   });
 
-  it("wraps children in SiteShell", () => {
+  it("wraps children in SiteShell without a global region bar", () => {
     render(
       <SiteShell>
         <p>Page body</p>
@@ -66,5 +60,6 @@ describe("layout components", () => {
     );
     expect(screen.getByText("Page body")).toBeInTheDocument();
     expect(screen.getByRole("main")).toBeInTheDocument();
+    expect(screen.queryByText("Region")).not.toBeInTheDocument();
   });
 });

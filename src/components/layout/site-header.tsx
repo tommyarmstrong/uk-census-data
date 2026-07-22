@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Menu } from "lucide-react";
 
-import { RegionFilter } from "@/components/layout/region-filter";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -33,7 +32,7 @@ function navLinkClass(active: boolean) {
 
 function sheetLinkClass(active: boolean) {
   return cn(
-    "rounded-md px-3 py-2.5 text-sm transition-colors duration-200 min-h-11",
+    "min-h-11 rounded-md px-3 py-2.5 text-sm transition-colors duration-200",
     active
       ? "bg-primary/10 text-primary font-medium"
       : "text-muted-foreground hover:text-foreground hover:bg-accent/60",
@@ -58,10 +57,6 @@ function SiteHeaderInner() {
         >
           UK Census Data
         </Link>
-
-        <div className="hidden min-w-0 sm:block">
-          <RegionFilter id="region-filter-header" />
-        </div>
 
         <nav
           className="ml-auto hidden items-center gap-0.5 lg:flex"
@@ -89,18 +84,14 @@ function SiteHeaderInner() {
           </Link>
         </nav>
 
-        <div className="ml-auto flex items-center gap-2 lg:ml-0">
-          <div className="sm:hidden">
-            <RegionFilter id="region-filter-compact" />
-          </div>
-
+        <div className="ml-auto lg:hidden">
           <Sheet>
             <SheetTrigger
               render={
                 <Button
                   variant="outline"
                   size="icon"
-                  className="min-h-11 min-w-11 lg:hidden"
+                  className="min-h-11 min-w-11"
                   aria-label="Open navigation"
                 />
               }
@@ -111,9 +102,6 @@ function SiteHeaderInner() {
               <SheetHeader>
                 <SheetTitle className="font-heading">Menu</SheetTitle>
               </SheetHeader>
-              <div className="mt-4">
-                <RegionFilter id="region-filter-sheet" fullWidth />
-              </div>
               <nav className="mt-4 flex flex-col gap-1" aria-label="Main">
                 <Link
                   href={withGeographyParam("/", geoCode)}
