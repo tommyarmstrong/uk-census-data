@@ -1,5 +1,4 @@
 import type { ChartDatum } from "@/lib/nomis/chart-data";
-import { measureDisplayName } from "@/lib/nomis/format-measure";
 import type { CensusSeries } from "@/lib/nomis/types";
 import type { TopicChart } from "@/lib/topic-map";
 
@@ -23,8 +22,7 @@ export function buildExportBasename(
   series: CensusSeries,
 ): string {
   const geo = slugify(series.geographyLabel || series.geographyCode);
-  const measure = slugify(measureDisplayName(series.measuresCode));
-  return `${slugify(chart.tableCode)}-${slugify(chart.slug)}-${geo}-${measure}`;
+  return `${slugify(chart.tableCode)}-${slugify(chart.slug)}-${geo}`;
 }
 
 /** CSV with readable category labels (no invented values). */
@@ -37,20 +35,17 @@ export function seriesToCsv(
     "category",
     "code",
     "value",
-    "measure",
-    "measuresCode",
+    "percent",
     "geography",
     "dataset",
     "table",
   ];
-  const measure = measureDisplayName(series.measuresCode);
   const rows = data.map((row) =>
     [
       escapeCsvField(row.name),
       escapeCsvField(row.code),
       String(row.value),
-      escapeCsvField(measure),
-      escapeCsvField(series.measuresCode),
+      row.percent !== undefined ? String(row.percent) : "",
       escapeCsvField(series.geographyLabel),
       escapeCsvField(chart.datasetId),
       escapeCsvField(chart.tableCode),
@@ -77,9 +72,9 @@ export function seriesToJson(
         code: series.geographyCode,
         label: series.geographyLabel,
       },
-      measure: {
-        code: series.measuresCode,
-        label: measureDisplayName(series.measuresCode),
+      measures: {
+        value: "20100",
+        percent: "20301",
       },
       source: series.source,
       fetchedAt: series.fetchedAt,
@@ -87,6 +82,7 @@ export function seriesToJson(
         category: row.name,
         code: row.code,
         value: row.value,
+        ...(row.percent !== undefined ? { percent: row.percent } : {}),
       })),
     },
     null,

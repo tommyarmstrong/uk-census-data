@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { filterChartObservations, toChartData } from "./chart-data";
+import {
+  filterChartObservations,
+  percentByCode,
+  toChartData,
+} from "./chart-data";
 
 const OBSERVATIONS = [
   { code: "0", label: "Total: All usual residents", value: 210 },
@@ -73,5 +77,33 @@ describe("toChartData", () => {
       { code: "2", name: "Male", value: 110 },
       { code: "1001", name: "All sexes (rollup)", value: 210 },
     ]);
+  });
+
+  it("attaches percent values by category code", () => {
+    const percents = percentByCode([
+      { code: "1", label: "Female", value: 47.6 },
+      { code: "2", label: "Male", value: 52.4 },
+      { code: "3", label: "Unknown", value: null },
+    ]);
+
+    expect(toChartData(OBSERVATIONS, percents)).toEqual([
+      { code: "0", name: "Total: All usual residents", value: 210 },
+      { code: "1", name: "Female", value: 100, percent: 47.6 },
+      { code: "2", name: "Male", value: 110, percent: 52.4 },
+      { code: "1001", name: "All sexes (rollup)", value: 210 },
+    ]);
+  });
+});
+
+describe("percentByCode", () => {
+  it("maps finite values and skips nulls", () => {
+    expect(
+      Object.fromEntries(
+        percentByCode([
+          { code: "1", label: "Female", value: 47.6 },
+          { code: "2", label: "Male", value: null },
+        ]),
+      ),
+    ).toEqual({ "1": 47.6 });
   });
 });

@@ -53,17 +53,39 @@ export type ChartDatum = {
   code: string;
   name: string;
   value: number;
+  /** NOMIS percent (20301) for the same category code, when available. */
+  percent?: number;
 };
 
+/** Build a code → percent lookup from a percent-measure series. */
+export function percentByCode(
+  observations: CensusObservation[],
+): Map<string, number> {
+  const map = new Map<string, number>();
+  for (const row of observations) {
+    if (row.value !== null && Number.isFinite(row.value)) {
+      map.set(row.code, row.value);
+    }
+  }
+  return map;
+}
+
 /** Map series rows to chart-ready points (null values omitted). */
-export function toChartData(observations: CensusObservation[]): ChartDatum[] {
+export function toChartData(
+  observations: CensusObservation[],
+  percents?: Map<string, number>,
+): ChartDatum[] {
   return observations
     .filter((row): row is CensusObservation & { value: number } => {
       return row.value !== null && Number.isFinite(row.value);
     })
-    .map((row) => ({
-      code: row.code,
-      name: row.label,
-      value: row.value,
-    }));
+    .map((row) => {
+      const percent = percents?.get(row.code);
+      return {
+        code: row.code,
+        name: row.label,
+        value: row.value,
+        ...(percent !== undefined ? { percent } : {}),
+      };
+    });
 }

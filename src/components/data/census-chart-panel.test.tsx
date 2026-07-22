@@ -23,13 +23,14 @@ vi.mock("@/lib/nomis/client", async () => {
 vi.mock("@/components/charts/census-chart-view", () => ({
   CensusChartView: ({
     chartType,
-    measures,
+    data,
   }: {
     chartType: string;
-    measures?: string;
+    data: Array<{ code: string; percent?: number }>;
   }) => (
     <div data-testid="chart-view">
-      {chartType}:{measures}
+      {chartType}:
+      {data.map((row) => `${row.code}=${row.percent ?? "na"}`).join(",")}
     </div>
   ),
 }));
@@ -38,27 +39,33 @@ vi.mock("@/components/data/chart-export-actions", () => ({
   ChartExportActions: () => <div data-testid="export-actions" />,
 }));
 
-describe("CensusChartPanel", () => {
-  const onMeasuresChange = vi.fn();
+const SAMPLE_PERCENT_SERIES = {
+  ...SAMPLE_SERIES,
+  measuresCode: NOMIS_MEASURES.percent,
+  observations: [
+    { code: "0", label: "Total: All usual residents", value: 100 },
+    { code: "1", label: "Female", value: 47.6 },
+    { code: "2", label: "Male", value: 52.4 },
+  ],
+};
 
+describe("CensusChartPanel", () => {
   beforeEach(() => {
     loadCensusSeries.mockReset();
-    onMeasuresChange.mockReset();
   });
 
-  it("shows loading then a successful chart", async () => {
-    loadCensusSeries.mockResolvedValue({
-      series: SAMPLE_SERIES,
-      source: "network",
-    });
+  it("shows loading then a successful chart with joined percents", async () => {
+    loadCensusSeries.mockImplementation(
+      async (params: { measures?: string }) => {
+        if (params.measures === NOMIS_MEASURES.percent) {
+          return { series: SAMPLE_PERCENT_SERIES, source: "network" };
+        }
+        return { series: SAMPLE_SERIES, source: "network" };
+      },
+    );
 
     render(
-      <CensusChartPanel
-        chart={SAMPLE_CHART}
-        geographyCode="2013265922"
-        measures={NOMIS_MEASURES.value}
-        onMeasuresChange={onMeasuresChange}
-      />,
+      <CensusChartPanel chart={SAMPLE_CHART} geographyCode="2013265922" />,
     );
 
     expect(screen.getByLabelText("Loading Sex")).toBeInTheDocument();
@@ -67,7 +74,9 @@ describe("CensusChartPanel", () => {
       expect(screen.getByText(/Live network/)).toBeInTheDocument();
     });
     expect(screen.getByRole("heading", { name: "Sex" })).toBeInTheDocument();
-    expect(screen.getByTestId("chart-view")).toHaveTextContent("pie:20100");
+    expect(screen.getByTestId("chart-view")).toHaveTextContent(
+      "pie:1=47.6,2=52.4",
+    );
     expect(screen.getByTestId("export-actions")).toBeInTheDocument();
     expect(loadCensusSeries).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -77,55 +86,32 @@ describe("CensusChartPanel", () => {
       }),
       expect.any(Object),
     );
-  });
-
-  it("loads percent when that measure is selected", async () => {
-    loadCensusSeries.mockResolvedValue({
-      series: { ...SAMPLE_SERIES, measuresCode: NOMIS_MEASURES.percent },
-      source: "network",
-    });
-
-    render(
-      <CensusChartPanel
-        chart={SAMPLE_CHART}
-        geographyCode="2013265922"
-        measures={NOMIS_MEASURES.percent}
-        onMeasuresChange={onMeasuresChange}
-      />,
-    );
-
-    await waitFor(() => {
-      expect(screen.getByTestId("chart-view")).toHaveTextContent("pie:20301");
-    });
     expect(loadCensusSeries).toHaveBeenCalledWith(
       expect.objectContaining({ measures: NOMIS_MEASURES.percent }),
       expect.any(Object),
     );
-    expect(screen.getByText(/Live network · Percent ·/)).toBeInTheDocument();
   });
 
-  it("notifies when the measure toggle changes", async () => {
-    const user = userEvent.setup();
-    loadCensusSeries.mockResolvedValue({
-      series: SAMPLE_SERIES,
-      source: "network",
-    });
+  it("still renders when the percent fetch fails", async () => {
+    loadCensusSeries.mockImplementation(
+      async (params: { measures?: string }) => {
+        if (params.measures === NOMIS_MEASURES.percent) {
+          throw new NomisClientError("percent unavailable", "http");
+        }
+        return { series: SAMPLE_SERIES, source: "network" };
+      },
+    );
 
     render(
-      <CensusChartPanel
-        chart={SAMPLE_CHART}
-        geographyCode="2013265922"
-        measures={NOMIS_MEASURES.value}
-        onMeasuresChange={onMeasuresChange}
-      />,
+      <CensusChartPanel chart={SAMPLE_CHART} geographyCode="2013265922" />,
     );
 
     await waitFor(() => {
-      expect(screen.getByTestId("chart-view")).toBeInTheDocument();
+      expect(screen.getByTestId("chart-view")).toHaveTextContent(
+        "pie:1=na,2=na",
+      );
     });
-
-    await user.click(screen.getByRole("button", { name: "Percent" }));
-    expect(onMeasuresChange).toHaveBeenCalledWith(NOMIS_MEASURES.percent);
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   });
 
   it("shows a stale badge for cache results", async () => {
@@ -136,12 +122,7 @@ describe("CensusChartPanel", () => {
     });
 
     render(
-      <CensusChartPanel
-        chart={SAMPLE_CHART}
-        geographyCode="2013265922"
-        measures={NOMIS_MEASURES.value}
-        onMeasuresChange={onMeasuresChange}
-      />,
+      <CensusChartPanel chart={SAMPLE_CHART} geographyCode="2013265922" />,
     );
 
     await waitFor(() => {
@@ -152,34 +133,32 @@ describe("CensusChartPanel", () => {
     expect(screen.getByText(/Browser cache/)).toBeInTheDocument();
   });
 
-  it("shows an error and retries", async () => {
+  it("shows an error and retries when count fails", async () => {
     const user = userEvent.setup();
     loadCensusSeries
       .mockRejectedValueOnce(
         new NomisClientError("offline", "offline-no-cache"),
       )
-      .mockResolvedValueOnce({
-        series: SAMPLE_SERIES,
-        source: "network",
+      .mockRejectedValueOnce(
+        new NomisClientError("offline", "offline-no-cache"),
+      )
+      .mockImplementation(async (params: { measures?: string }) => {
+        if (params.measures === NOMIS_MEASURES.percent) {
+          return { series: SAMPLE_PERCENT_SERIES, source: "network" };
+        }
+        return { series: SAMPLE_SERIES, source: "network" };
       });
 
     const { getByText, getByRole, findByText } = render(
-      <CensusChartPanel
-        chart={SAMPLE_CHART}
-        geographyCode="2013265922"
-        measures={NOMIS_MEASURES.value}
-        onMeasuresChange={onMeasuresChange}
-      />,
+      <CensusChartPanel chart={SAMPLE_CHART} geographyCode="2013265922" />,
     );
 
     expect(await findByText("offline")).toBeInTheDocument();
-    expect(screen.getByRole("group", { name: "Measure" })).toBeInTheDocument();
 
     await user.click(getByRole("button", { name: "Retry" }));
 
     await waitFor(() => {
       expect(getByText(/Live network/)).toBeInTheDocument();
     });
-    expect(loadCensusSeries).toHaveBeenCalledTimes(2);
   });
 });

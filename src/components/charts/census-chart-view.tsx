@@ -23,7 +23,10 @@ import {
 } from "@/lib/charts/format-label";
 import type { ChartDatum } from "@/lib/nomis/chart-data";
 import { NOMIS_MEASURES } from "@/lib/nomis/constants";
-import { formatMeasureValue } from "@/lib/nomis/format-measure";
+import {
+  formatCountWithPercent,
+  formatMeasureValue,
+} from "@/lib/nomis/format-measure";
 import type { ChartType } from "@/lib/topic-map";
 import { cn } from "@/lib/utils";
 
@@ -40,6 +43,10 @@ const CHART_COLORS = [
 
 const AXIS_TICK = { fontSize: 11, fill: "var(--axis-tick)" };
 const GRID_STROKE = "var(--grid-line)";
+
+function formatAxisValue(value: number): string {
+  return formatMeasureValue(value, NOMIS_MEASURES.value);
+}
 
 function useIsNarrow(breakpointPx = 640) {
   const [narrow, setNarrow] = useState(false);
@@ -62,18 +69,15 @@ function useIsNarrow(breakpointPx = 640) {
 type CensusChartViewProps = {
   chartType: ChartType;
   data: ChartDatum[];
-  measures?: string;
   className?: string;
 };
 
 export function ChartTooltip({
   active,
   payload,
-  measures = NOMIS_MEASURES.value,
 }: {
   active?: boolean;
   payload?: Array<{ name?: string; value?: number; payload?: ChartDatum }>;
-  measures?: string;
 }) {
   if (!active || !payload?.length) {
     return null;
@@ -82,13 +86,14 @@ export function ChartTooltip({
   const point = payload[0];
   const name = point.payload?.name ?? point.name ?? "";
   const value = typeof point.value === "number" ? point.value : null;
+  const percent = point.payload?.percent;
 
   return (
     <div className="bg-popover text-popover-foreground border-border/80 max-w-[min(16rem,80vw)] rounded-md border px-2.5 py-1.5 text-xs shadow-md">
       <p className="font-medium break-words">{name}</p>
       {value !== null ? (
         <p className="text-muted-foreground mt-0.5 tabular-nums">
-          {formatMeasureValue(value, measures)}
+          {formatCountWithPercent(value, percent)}
         </p>
       ) : null}
     </div>
@@ -138,11 +143,9 @@ export function ChartLegend({
 
 function HorizontalBarChart({
   data,
-  measures,
   className,
 }: {
   data: ChartDatum[];
-  measures: string;
   className?: string;
 }) {
   const height = Math.max(240, data.length * 32 + 56);
@@ -153,7 +156,6 @@ function HorizontalBarChart({
   );
   const yAxisWidth = yAxisWidthForLabels(displayLabels, isNarrow);
   const formatTick = (value: string) => formatChartAxisLabel(value, maxLen);
-  const formatValue = (value: number) => formatMeasureValue(value, measures);
 
   return (
     <div className={cn("animate-fade-in w-full", className)} style={{ height }}>
@@ -170,7 +172,7 @@ function HorizontalBarChart({
           />
           <XAxis
             type="number"
-            tickFormatter={formatValue}
+            tickFormatter={formatAxisValue}
             tick={AXIS_TICK}
             axisLine={false}
             tickLine={false}
@@ -186,7 +188,7 @@ function HorizontalBarChart({
             tickLine={false}
           />
           <Tooltip
-            content={<ChartTooltip measures={measures} />}
+            content={<ChartTooltip />}
             cursor={{ fill: "transparent" }}
           />
           <Bar dataKey="value" radius={[0, 4, 4, 0]} maxBarSize={26}>
@@ -205,17 +207,14 @@ function HorizontalBarChart({
 
 function VerticalBarChart({
   data,
-  measures,
   className,
 }: {
   data: ChartDatum[];
-  measures: string;
   className?: string;
 }) {
   const isNarrow = useIsNarrow();
   const maxLen = chartLabelMaxLength("axis-x", isNarrow);
   const formatTick = (value: string) => formatChartAxisLabel(value, maxLen);
-  const formatValue = (value: number) => formatMeasureValue(value, measures);
 
   return (
     <div className={cn("animate-fade-in h-72 w-full sm:h-80", className)}>
@@ -241,14 +240,14 @@ function VerticalBarChart({
             tickLine={false}
           />
           <YAxis
-            tickFormatter={formatValue}
+            tickFormatter={formatAxisValue}
             tick={AXIS_TICK}
             width={56}
             axisLine={false}
             tickLine={false}
           />
           <Tooltip
-            content={<ChartTooltip measures={measures} />}
+            content={<ChartTooltip />}
             cursor={{ fill: "transparent" }}
           />
           <Bar dataKey="value" radius={[4, 4, 0, 0]} maxBarSize={40}>
@@ -267,11 +266,9 @@ function VerticalBarChart({
 
 function PieChartView({
   data,
-  measures,
   className,
 }: {
   data: ChartDatum[];
-  measures: string;
   className?: string;
 }) {
   const isNarrow = useIsNarrow();
@@ -301,7 +298,7 @@ function PieChartView({
               />
             ))}
           </Pie>
-          <Tooltip content={<ChartTooltip measures={measures} />} />
+          <Tooltip content={<ChartTooltip />} />
           <Legend
             verticalAlign="bottom"
             content={<ChartLegend narrow={isNarrow} />}
@@ -315,7 +312,6 @@ function PieChartView({
 export function CensusChartView({
   chartType,
   data,
-  measures = NOMIS_MEASURES.value,
   className,
 }: CensusChartViewProps) {
   const isNarrow = useIsNarrow();
@@ -329,9 +325,7 @@ export function CensusChartView({
   }
 
   if (chartType === "pie") {
-    return (
-      <PieChartView data={data} measures={measures} className={className} />
-    );
+    return <PieChartView data={data} className={className} />;
   }
 
   const preferHorizontal =
@@ -340,16 +334,8 @@ export function CensusChartView({
       (isNarrow || data.length >= DENSE_VERTICAL_BAR_THRESHOLD));
 
   if (preferHorizontal) {
-    return (
-      <HorizontalBarChart
-        data={data}
-        measures={measures}
-        className={className}
-      />
-    );
+    return <HorizontalBarChart data={data} className={className} />;
   }
 
-  return (
-    <VerticalBarChart data={data} measures={measures} className={className} />
-  );
+  return <VerticalBarChart data={data} className={className} />;
 }

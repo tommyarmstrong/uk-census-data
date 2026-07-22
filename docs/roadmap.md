@@ -59,7 +59,7 @@ Not a second full redesign. After Stage 1 QA, approve a short bullet list (3–5
 
 ## Stage 3 — Percent measure (`20301`)
 
-**Status:** shipped (panel Count / Percent toggle; no URL persistence).
+**Status:** shipped as dual tooltip (count chart + percent on hover); Count / Percent toggle removed.
 
 | Step     | Deliverable                                                 |
 | -------- | ----------------------------------------------------------- |

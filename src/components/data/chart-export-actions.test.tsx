@@ -47,10 +47,10 @@ describe("ChartExportActions", () => {
 
     expect(downloadTextFile).toHaveBeenCalledTimes(2);
     expect(downloadTextFile.mock.calls[0]?.[0]).toBe(
-      "ts008-sex-north-west-count.csv",
+      "ts008-sex-north-west.csv",
     );
     expect(downloadTextFile.mock.calls[1]?.[0]).toBe(
-      "ts008-sex-north-west-count.json",
+      "ts008-sex-north-west.json",
     );
   });
 

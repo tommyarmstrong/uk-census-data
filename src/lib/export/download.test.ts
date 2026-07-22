@@ -9,14 +9,14 @@ import {
 import { SAMPLE_CHART, SAMPLE_SERIES } from "@/test/fixtures";
 
 const DATA = [
-  { code: "1", name: "Female", value: 100 },
-  { code: "2", name: "Male", value: 110 },
+  { code: "1", name: "Female", value: 100, percent: 47.6 },
+  { code: "2", name: "Male", value: 110, percent: 52.4 },
 ];
 
 describe("buildExportBasename", () => {
-  it("builds a slugified filename stem including measure", () => {
+  it("builds a slugified filename stem", () => {
     expect(buildExportBasename(SAMPLE_CHART, SAMPLE_SERIES)).toBe(
-      "ts008-sex-north-west-count",
+      "ts008-sex-north-west",
     );
   });
 
@@ -26,50 +26,48 @@ describe("buildExportBasename", () => {
         ...SAMPLE_SERIES,
         geographyLabel: "",
       }),
-    ).toBe("ts008-sex-2013265922-count");
-  });
-
-  it("uses percent in the basename when measures are percent", () => {
-    expect(
-      buildExportBasename(SAMPLE_CHART, {
-        ...SAMPLE_SERIES,
-        measuresCode: "20301",
-      }),
-    ).toBe("ts008-sex-north-west-percent");
+    ).toBe("ts008-sex-2013265922");
   });
 });
 
 describe("seriesToCsv", () => {
-  it("exports readable category labels and measure", () => {
+  it("exports count and percent columns", () => {
     expect(seriesToCsv(SAMPLE_CHART, SAMPLE_SERIES, DATA)).toBe(
       [
-        "category,code,value,measure,measuresCode,geography,dataset,table",
-        "Female,1,100,Count,20100,North West,NM_2028_1,TS008",
-        "Male,2,110,Count,20100,North West,NM_2028_1,TS008",
+        "category,code,value,percent,geography,dataset,table",
+        "Female,1,100,47.6,North West,NM_2028_1,TS008",
+        "Male,2,110,52.4,North West,NM_2028_1,TS008",
         "",
       ].join("\n"),
     );
   });
 
+  it("leaves percent blank when missing", () => {
+    const csv = seriesToCsv(SAMPLE_CHART, SAMPLE_SERIES, [
+      { code: "1", name: "Female", value: 100 },
+    ]);
+    expect(csv).toContain("Female,1,100,,North West,NM_2028_1,TS008");
+  });
+
   it("escapes commas and quotes in category labels", () => {
     const csv = seriesToCsv(SAMPLE_CHART, SAMPLE_SERIES, [
-      { code: "1", name: 'Owned, "outright"', value: 42 },
+      { code: "1", name: 'Owned, "outright"', value: 42, percent: 10 },
     ]);
     expect(csv).toContain(
-      '"Owned, ""outright""",1,42,Count,20100,North West,NM_2028_1,TS008',
+      '"Owned, ""outright""",1,42,10,North West,NM_2028_1,TS008',
     );
   });
 });
 
 describe("seriesToJson", () => {
-  it("includes chart metadata, measure, and observations", () => {
+  it("includes chart metadata and count/percent observations", () => {
     const parsed = JSON.parse(seriesToJson(SAMPLE_CHART, SAMPLE_SERIES, DATA));
     expect(parsed.chart.tableCode).toBe("TS008");
     expect(parsed.geography.label).toBe("North West");
-    expect(parsed.measure).toEqual({ code: "20100", label: "Count" });
+    expect(parsed.measures).toEqual({ value: "20100", percent: "20301" });
     expect(parsed.observations).toEqual([
-      { category: "Female", code: "1", value: 100 },
-      { category: "Male", code: "2", value: 110 },
+      { category: "Female", code: "1", value: 100, percent: 47.6 },
+      { category: "Male", code: "2", value: 110, percent: 52.4 },
     ]);
   });
 });

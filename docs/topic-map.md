@@ -5,7 +5,7 @@ Census 2021 Topic Summary tables under the eight major topics.
 
 Constants live in `src/lib/topic-map.ts` and `src/lib/nomis/constants.ts`.
 
-Geography for all charts: England & Wales aggregates and regions; default **England and Wales** (`2092957703`). Measure: count (`20100`) by default; users can switch to percent (`20301`) on the chart panel.
+Geography for all charts: England & Wales aggregates and regions; default **England and Wales** (`2092957703`). Charts plot count (`20100`); tooltips also show NOMIS percent (`20301`), e.g. `15,258,981 (61.6%)`.
 
 ---
 
@@ -59,4 +59,3 @@ Geography for all charts: England & Wales aggregates and regions; default **Engl
 
 - Cross-tabs (e.g. TS009 sex by age)
 - Local authority / MSOA geography drill-down
-- URL persistence for measure (`?measure=`) — session toggle only today

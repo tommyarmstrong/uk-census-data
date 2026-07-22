@@ -83,8 +83,8 @@ Topic charts use Loading / Error / Stale via `CensusChartPanel`.
 
 ## Chart wiring
 
-All charts in [topic-map.md](./topic-map.md) (20 univariate charts across 8 topics) load via `/api/nomis` + `loadCensusSeries`, respect `?geography=`, support Count / Percent (`20100` / `20301`) on the chart panel, use browser cache, and render with Recharts (`pie` / `bar` / `horizontal-bar`) plus shared Loading / Error / Stale states.
+All charts in [topic-map.md](./topic-map.md) (20 univariate charts across 8 topics) load via `/api/nomis` + `loadCensusSeries`, respect `?geography=`, plot count values with percent alongside in tooltips (`20100` + `20301`), use browser cache, and render with Recharts (`pie` / `bar` / `horizontal-bar`) plus shared Loading / Error / Stale states.
 
-**Also in place:** CSV/JSON export and Share per chart (exports include measure); client fetch queue + in-flight dedupe; proxy rate limit; PWA manifest + app-shell service worker (offline = shell + last chart cache only); v2 design ([design.md](./design.md)).
+**Also in place:** CSV/JSON export and Share per chart (exports include count and percent); client fetch queue + in-flight dedupe; proxy rate limit; PWA manifest + app-shell service worker (offline = shell + last chart cache only); v2 design ([design.md](./design.md)).
 
-**Still later:** Acceptance checks doc; cross-tabs; LA/MSOA geography; shareable measure URL (see [roadmap.md](./roadmap.md)).
+**Still later:** Acceptance checks doc; cross-tabs; LA/MSOA geography (see [roadmap.md](./roadmap.md)).

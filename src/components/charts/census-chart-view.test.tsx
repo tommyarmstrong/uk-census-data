@@ -291,22 +291,26 @@ describe("ChartTooltip", () => {
     expect(screen.getByText("1,234")).toBeInTheDocument();
   });
 
-  it("formats percent measures with a % suffix", () => {
+  it("formats count with percent when both are present", () => {
     render(
       <ChartTooltip
         active
-        measures="20301"
         payload={[
           {
             name: "Female",
-            value: 49.2,
-            payload: { code: "1", name: "Female", value: 49.2 },
+            value: 15258981,
+            payload: {
+              code: "1",
+              name: "Female",
+              value: 15258981,
+              percent: 61.6,
+            },
           },
         ]}
       />,
     );
 
-    expect(screen.getByText("49.2%")).toBeInTheDocument();
+    expect(screen.getByText("15,258,981 (61.6%)")).toBeInTheDocument();
   });
 
   it("falls back to payload name when the datum is missing", () => {

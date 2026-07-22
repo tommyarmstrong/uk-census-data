@@ -6,16 +6,8 @@ import { TopicCharts } from "./topic-charts";
 import type { TopicChart } from "@/lib/topic-map";
 
 vi.mock("@/components/data/chart-slot", () => ({
-  ChartSlot: ({
-    chart,
-    measures,
-  }: {
-    chart: { name: string };
-    measures: string;
-  }) => (
-    <div data-testid="chart-slot">
-      {chart.name}:{measures}
-    </div>
+  ChartSlot: ({ chart }: { chart: { name: string } }) => (
+    <div data-testid="chart-slot">{chart.name}</div>
   ),
 }));
 
@@ -49,7 +41,7 @@ describe("TopicCharts", () => {
     const user = userEvent.setup();
     render(<TopicCharts charts={CHARTS} geographyCode="2013265922" />);
 
-    expect(screen.getByTestId("chart-slot")).toHaveTextContent("Sex:20100");
+    expect(screen.getByTestId("chart-slot")).toHaveTextContent("Sex");
     const sexButton = screen.getByRole("button", { name: "Sex" });
     expect(sexButton).toHaveAttribute("aria-pressed", "true");
     expect(sexButton.className).toMatch(/min-h-11/);
@@ -59,7 +51,7 @@ describe("TopicCharts", () => {
     );
 
     expect(screen.getByTestId("chart-slot")).toHaveTextContent(
-      "Age (five-year bands):20100",
+      "Age (five-year bands)",
     );
     expect(
       screen.getByRole("button", { name: "Age (five-year bands)" }),
@@ -72,7 +64,7 @@ describe("TopicCharts", () => {
     expect(
       screen.queryByRole("navigation", { name: "Charts on this page" }),
     ).not.toBeInTheDocument();
-    expect(screen.getByTestId("chart-slot")).toHaveTextContent("Sex:20100");
+    expect(screen.getByTestId("chart-slot")).toHaveTextContent("Sex");
   });
 
   it("renders nothing when there are no charts", () => {
