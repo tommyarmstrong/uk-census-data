@@ -90,4 +90,4 @@ All 11 v1 charts (see [topic-map.md](./topic-map.md)) load via `/api/nomis` + `l
 
 **Also in place:** CSV/JSON export per chart; client fetch queue + in-flight dedupe; proxy rate limit; PWA manifest + app-shell service worker (offline = shell + last chart cache only).
 
-**Still later:** Share-on-mobile, acceptance checks doc. Branding polish delivered in v2 ([design.md](./design.md)).
+**Still later:** Acceptance checks doc. Share-on-mobile delivered via chart Share button (Web Share API / clipboard fallback). Branding polish delivered in v2 ([design.md](./design.md)).

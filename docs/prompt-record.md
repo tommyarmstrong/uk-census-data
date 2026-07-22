@@ -907,3 +907,13 @@ Prompt:
 1. Remove "UK Census Data" from the body of the home page. this is already in the header, so adds no value.
 
 2. Make tke the emojis and the text fill the tiles on the home page in desktop view. This is already ok on mobile.
+
+3. Add a share button for alongside the chart export buttons, to share with connected apps.
+
+Output:
+
+Done.
+
+1. Home — removed the body “UK Census Data” heading; kept the short intro line
+   2.Desktop tiles — emoji scales with viewport height (clamp) and fills the tile with flex-1 / justify-evenly
+2. Share — button beside CSV/JSON; uses the system share sheet when available, otherwise copies the page URL (label briefly shows “Copied”)

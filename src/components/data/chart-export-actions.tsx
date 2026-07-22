@@ -1,6 +1,7 @@
 "use client";
 
-import { Download } from "lucide-react";
+import { useState } from "react";
+import { Download, Share2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import type { ChartDatum } from "@/lib/nomis/chart-data";
@@ -29,6 +30,7 @@ export function ChartExportActions({
 }: ChartExportActionsProps) {
   const basename = buildExportBasename(chart, series);
   const disabled = data.length === 0;
+  const [shareLabel, setShareLabel] = useState("Share");
 
   const onCsv = () => {
     downloadTextFile(
@@ -44,6 +46,34 @@ export function ChartExportActions({
       seriesToJson(chart, series, data),
       "application/json;charset=utf-8",
     );
+  };
+
+  const onShare = async () => {
+    const url = window.location.href;
+    const title = `${chart.name} — UK Census Data`;
+    const text = `${chart.name} for ${series.geographyLabel}`;
+    const shareData: ShareData = { title, text, url };
+
+    try {
+      if (
+        typeof navigator.share === "function" &&
+        (!navigator.canShare || navigator.canShare(shareData))
+      ) {
+        await navigator.share(shareData);
+        return;
+      }
+
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(url);
+        setShareLabel("Copied");
+        window.setTimeout(() => setShareLabel("Share"), 1600);
+      }
+    } catch (error) {
+      // User cancel on share sheet — ignore; other failures stay silent.
+      if (error instanceof DOMException && error.name === "AbortError") {
+        return;
+      }
+    }
   };
 
   return (
@@ -69,6 +99,17 @@ export function ChartExportActions({
       >
         <Download data-icon="inline-start" />
         JSON
+      </Button>
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
+        disabled={disabled}
+        onClick={() => void onShare()}
+        aria-label={`Share ${chart.name}`}
+      >
+        <Share2 data-icon="inline-start" />
+        {shareLabel}
       </Button>
     </div>
   );

@@ -19,17 +19,20 @@ vi.mock("next/link", () => ({
 import HomePage from "./page";
 
 describe("HomePage", () => {
-  it("renders topic tiles without a region readout", async () => {
+  it("renders topic tiles without a duplicate body title", async () => {
     const ui = await HomePage({
       searchParams: Promise.resolve({ geography: "2013265922" }),
     });
     render(ui);
 
     expect(
-      screen.getByRole("heading", { name: "UK Census Data" }),
+      screen.queryByRole("heading", { name: "UK Census Data" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Explore UK Census 2021 statistics by topic and region.",
+      ),
     ).toBeInTheDocument();
-    expect(screen.queryByText("North West")).not.toBeInTheDocument();
-    expect(screen.queryByText(/Showing:/)).not.toBeInTheDocument();
     expect(screen.getByText("👥")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Demographics/ })).toHaveAttribute(
       "href",

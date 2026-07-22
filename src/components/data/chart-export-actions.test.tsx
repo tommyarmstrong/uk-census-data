@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -17,6 +17,11 @@ vi.mock("@/lib/export/download", async () => {
   };
 });
 
+const DATA = [
+  { code: "1", name: "Female", value: 100 },
+  { code: "2", name: "Male", value: 110 },
+];
+
 describe("ChartExportActions", () => {
   beforeEach(() => {
     downloadTextFile.mockClear();
@@ -24,16 +29,12 @@ describe("ChartExportActions", () => {
 
   it("exports CSV and JSON", async () => {
     const user = userEvent.setup();
-    const data = [
-      { code: "1", name: "Female", value: 100 },
-      { code: "2", name: "Male", value: 110 },
-    ];
 
     render(
       <ChartExportActions
         chart={SAMPLE_CHART}
         series={SAMPLE_SERIES}
-        data={data}
+        data={DATA}
       />,
     );
 
@@ -53,6 +54,67 @@ describe("ChartExportActions", () => {
     );
   });
 
+  it("shares via the Web Share API when available", async () => {
+    const user = userEvent.setup();
+    const share = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "share", {
+      configurable: true,
+      value: share,
+    });
+    Object.defineProperty(navigator, "canShare", {
+      configurable: true,
+      value: () => true,
+    });
+
+    render(
+      <ChartExportActions
+        chart={SAMPLE_CHART}
+        series={SAMPLE_SERIES}
+        data={DATA}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: /Share Sex/i }));
+
+    expect(share).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: "Sex — UK Census Data",
+        text: "Sex for North West",
+        url: expect.stringMatching(/^https?:\/\//),
+      }),
+    );
+  });
+
+  it("copies the page URL when Web Share is unavailable", async () => {
+    const user = userEvent.setup();
+    Object.defineProperty(navigator, "share", {
+      configurable: true,
+      value: undefined,
+    });
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { writeText },
+    });
+
+    render(
+      <ChartExportActions
+        chart={SAMPLE_CHART}
+        series={SAMPLE_SERIES}
+        data={DATA}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: /Share Sex/i }));
+
+    await waitFor(() => {
+      expect(writeText).toHaveBeenCalled();
+      expect(
+        screen.getByRole("button", { name: /Share Sex/i }),
+      ).toHaveTextContent("Copied");
+    });
+  });
+
   it("disables export buttons when there is no data", () => {
     const { getByRole } = render(
       <ChartExportActions
@@ -64,5 +126,6 @@ describe("ChartExportActions", () => {
 
     expect(getByRole("button", { name: /Export Sex as CSV/i })).toBeDisabled();
     expect(getByRole("button", { name: /Export Sex as JSON/i })).toBeDisabled();
+    expect(getByRole("button", { name: /Share Sex/i })).toBeDisabled();
   });
 });
