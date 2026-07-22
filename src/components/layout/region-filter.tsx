@@ -67,6 +67,7 @@ export function RegionFilter({
           id={id}
           size="sm"
           className={cn(
+            "min-h-11 sm:min-h-8",
             fullWidth && "w-full min-w-0",
             !fullWidth && "max-w-56",
           )}

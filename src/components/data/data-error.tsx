@@ -20,7 +20,7 @@ export function DataError({
     <div
       role="alert"
       className={cn(
-        "border-destructive/40 bg-destructive/5 rounded-lg border p-4",
+        "border-destructive/30 bg-destructive/5 rounded-lg border p-4",
         className,
       )}
     >
@@ -38,7 +38,7 @@ export function DataError({
           type="button"
           variant="outline"
           size="sm"
-          className="mt-3"
+          className="mt-3 min-h-11 sm:min-h-0"
           onClick={onRetry}
         >
           Retry

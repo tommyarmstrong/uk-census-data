@@ -1,18 +1,23 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Source_Sans_3, Source_Serif_4, Geist_Mono } from "next/font/google";
 
 import { SiteShell } from "@/components/layout/site-shell";
 import { ServiceWorkerRegister } from "@/components/pwa/service-worker-register";
 
 import "./globals.css";
 
-const geistSans = Geist({
+const sourceSans = Source_Sans_3({
   variable: "--font-sans",
   subsets: ["latin"],
 });
 
+const sourceSerif = Source_Serif_4({
+  variable: "--font-heading",
+  subsets: ["latin"],
+});
+
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+  variable: "--font-mono",
   subsets: ["latin"],
 });
 
@@ -35,7 +40,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#212121",
+  themeColor: "#2a6b6b",
 };
 
 export default function RootLayout({
@@ -47,7 +52,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${sourceSans.variable} ${sourceSerif.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body
         suppressHydrationWarning

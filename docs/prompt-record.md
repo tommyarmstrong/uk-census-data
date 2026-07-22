@@ -708,3 +708,78 @@ Model: Cursor Auto
 Context window: **NEW**
 
 Prompt:
+
+Define v2 as design and styling.
+
+What planning is required to build a stylish minimalist app design that renders on mobile and desktop? Define the steps and the order to implement.
+
+Outputs:
+
+The full plan is in docs/design.md.
+
+**Planning required (before code)**
+
+1. Lock a short design brief — mood, light-only vs dark, fonts, one accent, chart palette, density, motion budget. Without this, restyling thrashs.
+2. Surface inventory — tokens, shell, home/about, topic pages, charts, data states, controls (already listed in the doc).
+3. Responsive rules — what changes at sm / lg; no horizontal scroll; chart label behaviour on narrow screens.
+4. Acceptance checks — 375px + 1280px on home, one topic, About; AA contrast; tests still green.
+
+**Implement in this order**
+
+Step What
+0
+Approve the brief
+1
+Tokens + typography (globals.css, fonts)
+2
+Shell (header / footer / frame)
+3
+Home + About
+4
+Topic page + chart slots
+5
+Chart visuals + mobile orientation
+6
+Data states + light CSS motion
+7
+Responsive QA
+Foundation first so pages and charts inherit one look. No new datasets or IA changes in v2.
+
+Next action: approve or edit the default brief table in docs/design.md (mood, accent, fonts). Once that section is locked, implementation can start at step 1.
+
+### Prompt 2
+
+Model: Cursor Auto
+
+Context window: **EXISTING**
+
+Prompt:
+
+Update so that charts use cool blue and green color scales (light blue, teal, navy, grays, etc) not just grey scale. Then approve the design brief.
+
+Then implement.
+
+Output:
+
+**Brief (locked)**
+
+Calm institutional · light only · Source Serif 4 + Source Sans 3 · deep teal accent · cool blue–green chart scale (light blue, teal, navy, seafoam, cool grays, plus 3 more for longer series)
+
+**What changed**
+
+- Tokens / type — cool wash background, teal primary, 8-colour chart palette
+- Shell — clearer wordmark, teal active nav, larger touch targets
+- Pages — airier home / about / topic rhythm; soft chart panels
+- Charts — blue/teal/navy/green fills; vertical bars flip to horizontal under 640px
+- States — loading / error / stale aligned with the new look + light fade-in
+
+Details live in `docs/design.md`. Worth a quick look on phone + desktop against the live deploy when you’re ready.
+
+### Prompt 3
+
+Model: Cursor Auto
+
+Context window: **EXISTING**
+
+Prompt:
+

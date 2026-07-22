@@ -16,12 +16,12 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   const topics = getTopicsWithCharts();
 
   return (
-    <div className="flex flex-col gap-10">
-      <section className="flex max-w-2xl flex-col gap-3">
-        <h1 className="text-3xl font-semibold tracking-tight">
+    <div className="animate-fade-in flex flex-col gap-12">
+      <section className="flex max-w-2xl flex-col gap-4">
+        <h1 className="text-foreground text-4xl font-semibold tracking-tight sm:text-5xl">
           UK Census Data
         </h1>
-        <p className="text-muted-foreground text-base leading-relaxed">
+        <p className="text-muted-foreground text-base leading-relaxed sm:text-lg">
           Explore UK Census 2021 statistics by topic and region. Charts load
           live from NOMIS for the selected geography.
         </p>
@@ -35,11 +35,11 @@ export default async function HomePage({ searchParams }: HomePageProps) {
         </p>
       </section>
 
-      <section className="flex flex-col gap-4">
+      <section className="flex flex-col gap-5">
         <div className="flex flex-col gap-1">
-          <h2 className="text-lg font-medium tracking-tight">Topics</h2>
+          <h2 className="text-xl font-semibold tracking-tight">Topics</h2>
           <p className="text-muted-foreground text-sm">
-            v1 charts per topic, filtered by the region in the header.
+            Charts per topic, filtered by the region in the header.
           </p>
         </div>
 
@@ -51,13 +51,15 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                   `/topics/${topic.slug}`,
                   geography.code,
                 )}
-                className="hover:bg-muted/50 block rounded-lg border p-4 transition-colors"
+                className="border-border/80 bg-card/70 hover:border-primary/35 hover:bg-card group block rounded-lg border p-5 transition-colors duration-200"
               >
-                <span className="block text-sm font-medium">{topic.name}</span>
-                <span className="text-muted-foreground mt-1 block text-sm">
+                <span className="text-foreground group-hover:text-primary block text-base font-medium transition-colors">
+                  {topic.name}
+                </span>
+                <span className="text-muted-foreground mt-1.5 block text-sm leading-relaxed">
                   {topic.description}
                 </span>
-                <span className="text-muted-foreground mt-2 block text-xs">
+                <span className="text-muted-foreground/90 mt-3 block text-xs tracking-wide">
                   {topic.charts.map((chart) => chart.name).join(" · ")}
                 </span>
               </Link>

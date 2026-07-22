@@ -16,7 +16,7 @@ export function DataUnavailable({
   return (
     <div
       className={cn(
-        "rounded-lg border border-dashed p-6 text-center",
+        "border-border/80 bg-muted/30 rounded-lg border border-dashed p-6 text-center",
         className,
       )}
     >

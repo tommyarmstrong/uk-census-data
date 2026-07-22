@@ -34,19 +34,21 @@ export default async function TopicPage({
   const charts = getChartsForTopic(topic.slug);
 
   return (
-    <div className="flex max-w-3xl flex-col gap-6">
-      <div className="flex flex-col gap-2">
+    <div className="animate-fade-in flex max-w-3xl flex-col gap-8">
+      <div className="flex flex-col gap-3">
         <p className="text-muted-foreground text-sm">
           <Link
             href={withGeographyParam("/", geography.code)}
-            className="hover:text-foreground transition-colors"
+            className="hover:text-primary transition-colors"
           >
             Home
           </Link>
-          <span className="mx-2">/</span>
-          <span>{topic.name}</span>
+          <span className="text-border mx-2">/</span>
+          <span className="text-foreground">{topic.name}</span>
         </p>
-        <h1 className="text-3xl font-semibold tracking-tight">{topic.name}</h1>
+        <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
+          {topic.name}
+        </h1>
         <p className="text-muted-foreground text-base leading-relaxed">
           {topic.description}
         </p>
@@ -62,7 +64,7 @@ export default async function TopicPage({
             <a
               key={chart.id}
               href={`#${chart.slug}`}
-              className="bg-muted text-muted-foreground hover:text-foreground rounded-md px-2.5 py-1 text-xs transition-colors"
+              className="bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground rounded-md px-3 py-1.5 text-xs transition-colors duration-200"
             >
               {chart.name}
             </a>
@@ -70,9 +72,9 @@ export default async function TopicPage({
         </nav>
       ) : null}
 
-      <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-medium tracking-tight">Charts</h2>
-        <ul className="flex flex-col gap-4">
+      <section className="flex flex-col gap-4">
+        <h2 className="text-xl font-semibold tracking-tight">Charts</h2>
+        <ul className="flex flex-col gap-5">
           {charts.map((chart) => (
             <ChartSlot
               key={chart.id}

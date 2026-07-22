@@ -9,7 +9,7 @@ export function DataStaleBadge({ className }: DataStaleBadgeProps) {
   return (
     <span
       className={cn(
-        "bg-muted text-muted-foreground inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium",
+        "bg-accent text-accent-foreground inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium",
         className,
       )}
     >

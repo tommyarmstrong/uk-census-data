@@ -24,19 +24,19 @@ import { cn } from "@/lib/utils";
 
 function navLinkClass(active: boolean) {
   return cn(
-    "rounded-md px-2 py-1.5 text-xs transition-colors",
+    "rounded-md px-2 py-1.5 text-xs transition-colors duration-200",
     active
-      ? "bg-muted text-foreground"
-      : "text-muted-foreground hover:text-foreground",
+      ? "bg-primary/10 text-primary font-medium"
+      : "text-muted-foreground hover:text-foreground hover:bg-accent/60",
   );
 }
 
 function sheetLinkClass(active: boolean) {
   return cn(
-    "rounded-md px-3 py-2 text-sm transition-colors",
+    "rounded-md px-3 py-2.5 text-sm transition-colors duration-200 min-h-11",
     active
-      ? "bg-muted text-foreground"
-      : "text-muted-foreground hover:text-foreground",
+      ? "bg-primary/10 text-primary font-medium"
+      : "text-muted-foreground hover:text-foreground hover:bg-accent/60",
   );
 }
 
@@ -50,11 +50,11 @@ function SiteHeaderInner() {
   const aboutHref = withGeographyParam("/about", geoCode);
 
   return (
-    <header className="bg-background/95 sticky top-0 z-40 border-b backdrop-blur">
-      <div className="mx-auto flex h-14 w-full max-w-6xl items-center gap-3 px-4 sm:px-6">
+    <header className="border-border/80 bg-background/85 sticky top-0 z-40 border-b backdrop-blur-md">
+      <div className="mx-auto flex h-14 w-full max-w-6xl items-center gap-3 px-4 sm:h-16 sm:px-6">
         <Link
           href={withGeographyParam("/", geoCode)}
-          className="shrink-0 text-sm font-semibold tracking-tight"
+          className="font-heading text-foreground hover:text-primary shrink-0 text-base font-semibold tracking-tight transition-colors sm:text-lg"
         >
           UK Census Data
         </Link>
@@ -64,7 +64,7 @@ function SiteHeaderInner() {
         </div>
 
         <nav
-          className="ml-auto hidden items-center gap-1 lg:flex"
+          className="ml-auto hidden items-center gap-0.5 lg:flex"
           aria-label="Main"
         >
           {TOPICS.map((topic) => {
@@ -100,7 +100,7 @@ function SiteHeaderInner() {
                 <Button
                   variant="outline"
                   size="icon"
-                  className="lg:hidden"
+                  className="min-h-11 min-w-11 lg:hidden"
                   aria-label="Open navigation"
                 />
               }
@@ -109,7 +109,7 @@ function SiteHeaderInner() {
             </SheetTrigger>
             <SheetContent side="right" className="w-72">
               <SheetHeader>
-                <SheetTitle>Menu</SheetTitle>
+                <SheetTitle className="font-heading">Menu</SheetTitle>
               </SheetHeader>
               <div className="mt-4">
                 <RegionFilter id="region-filter-sheet" fullWidth />
@@ -155,9 +155,9 @@ function SiteHeaderInner() {
 
 function HeaderFallback() {
   return (
-    <header className="bg-background/95 sticky top-0 z-40 border-b backdrop-blur">
-      <div className="mx-auto flex h-14 w-full max-w-6xl items-center px-4 sm:px-6">
-        <span className="text-sm font-semibold tracking-tight">
+    <header className="border-border/80 bg-background/85 sticky top-0 z-40 border-b backdrop-blur-md">
+      <div className="mx-auto flex h-14 w-full max-w-6xl items-center px-4 sm:h-16 sm:px-6">
+        <span className="font-heading text-base font-semibold tracking-tight sm:text-lg">
           UK Census Data
         </span>
       </div>

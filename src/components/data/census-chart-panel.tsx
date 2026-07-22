@@ -100,9 +100,9 @@ export function CensusChartPanel({
   const data = toChartData(observations);
 
   return (
-    <div className="mt-4 flex flex-col gap-3">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="text-muted-foreground flex flex-wrap items-center gap-2 text-xs">
+    <div className="mt-5 flex flex-col gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="text-muted-foreground flex flex-wrap items-center gap-2 text-xs leading-relaxed">
           <span>
             {status.source === "network" ? "Live network" : "Browser cache"}
             {" · "}

@@ -12,7 +12,10 @@ export function DataLoading({
 }: DataLoadingProps) {
   return (
     <div
-      className={cn("bg-muted/40 h-28 animate-pulse rounded-lg", className)}
+      className={cn(
+        "from-muted/50 via-accent/40 to-muted/50 h-28 animate-pulse rounded-lg bg-linear-to-r",
+        className,
+      )}
       aria-busy="true"
       aria-label={label}
     />

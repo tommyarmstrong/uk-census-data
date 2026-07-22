@@ -2,15 +2,17 @@ import Link from "next/link";
 
 export default function AboutPage() {
   return (
-    <div className="flex max-w-2xl flex-col gap-8">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-semibold tracking-tight">About</h1>
-        <p className="text-muted-foreground text-base leading-relaxed">
+    <div className="animate-fade-in flex max-w-2xl flex-col gap-10">
+      <div className="flex flex-col gap-3">
+        <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
+          About
+        </h1>
+        <p className="text-muted-foreground text-base leading-relaxed sm:text-lg">
           UK Census Data is a frontend explorer for official Census 2021
           statistics for England and Wales. Charts load live from{" "}
           <a
             href="https://www.nomisweb.co.uk/"
-            className="text-foreground underline-offset-4 hover:underline"
+            className="text-foreground hover:text-primary underline-offset-4 transition-colors hover:underline"
             rel="noopener noreferrer"
             target="_blank"
           >
@@ -21,7 +23,7 @@ export default function AboutPage() {
       </div>
 
       <section className="flex flex-col gap-2">
-        <h2 className="text-lg font-medium tracking-tight">Data source</h2>
+        <h2 className="text-xl font-semibold tracking-tight">Data source</h2>
         <p className="text-muted-foreground text-sm leading-relaxed">
           Figures are Census 2021 Topic Summary tables published via NOMIS.
           Geography coverage is England and Wales (and English regions / Wales).
@@ -31,13 +33,13 @@ export default function AboutPage() {
       </section>
 
       <section className="flex flex-col gap-2">
-        <h2 className="text-lg font-medium tracking-tight">Licence</h2>
+        <h2 className="text-xl font-semibold tracking-tight">Licence</h2>
         <p className="text-muted-foreground text-sm leading-relaxed">
           Census 2021 / NOMIS statistics used in this application are Crown
           copyright and are available under the{" "}
           <a
             href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
-            className="text-foreground underline-offset-4 hover:underline"
+            className="text-foreground hover:text-primary underline-offset-4 transition-colors hover:underline"
             rel="noopener noreferrer"
             target="_blank"
           >
@@ -64,7 +66,7 @@ export default function AboutPage() {
       <p className="text-sm">
         <Link
           href="/"
-          className="text-foreground font-medium underline-offset-4 hover:underline"
+          className="text-primary font-medium underline-offset-4 transition-colors hover:underline"
         >
           Back to home
         </Link>
