@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Menu } from "lucide-react";
@@ -39,6 +40,20 @@ function sheetLinkClass(active: boolean) {
   );
 }
 
+function BrandMark({ className }: { className?: string }) {
+  return (
+    <Image
+      src="/icon.svg"
+      alt=""
+      width={32}
+      height={32}
+      className={cn("size-7 rounded-md sm:size-8", className)}
+      aria-hidden
+      priority
+    />
+  );
+}
+
 function SiteHeaderInner() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -53,8 +68,9 @@ function SiteHeaderInner() {
       <div className="mx-auto flex h-14 w-full max-w-6xl items-center gap-3 px-4 sm:h-16 sm:px-6">
         <Link
           href={withGeographyParam("/", geoCode)}
-          className="font-heading text-foreground hover:text-primary shrink-0 text-base font-semibold tracking-tight transition-colors sm:text-lg"
+          className="font-heading text-foreground hover:text-primary flex shrink-0 items-center gap-2 text-base font-semibold tracking-tight transition-colors sm:text-lg"
         >
+          <BrandMark />
           UK Census Data
         </Link>
 
@@ -151,7 +167,8 @@ function HeaderFallback() {
   return (
     <header className="border-border/80 bg-background/85 sticky top-0 z-40 border-b backdrop-blur-md">
       <div className="mx-auto flex h-14 w-full max-w-6xl items-center px-4 sm:h-16 sm:px-6">
-        <span className="font-heading text-base font-semibold tracking-tight sm:text-lg">
+        <span className="font-heading flex items-center gap-2 text-base font-semibold tracking-tight sm:text-lg">
+          <BrandMark />
           UK Census Data
         </span>
       </div>
