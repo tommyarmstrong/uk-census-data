@@ -100,6 +100,16 @@ describe("topic-map helpers", () => {
     }
   });
 
+  it("assigns every TOPIC_CHARTS entry to exactly one topic", () => {
+    const topics = getTopicsWithCharts();
+    const assignedIds = topics.flatMap((topic) =>
+      topic.charts.map((chart) => chart.id),
+    );
+
+    expect(assignedIds).toEqual(TOPIC_CHARTS.map((chart) => chart.id));
+    expect(new Set(assignedIds).size).toBe(assignedIds.length);
+  });
+
   it("looks up charts by id", () => {
     expect(getChartById("demographics-sex")?.tableCode).toBe("TS008");
     expect(getChartById("employment-industry")?.categoryMode).toBe("summary");

@@ -1,4 +1,5 @@
 import type { ChartDatum } from "@/lib/nomis/chart-data";
+import { NOMIS_MEASURES } from "@/lib/nomis/constants";
 import type { CensusSeries } from "@/lib/nomis/types";
 import type { TopicChart } from "@/lib/topic-map";
 
@@ -73,8 +74,8 @@ export function seriesToJson(
         label: series.geographyLabel,
       },
       measures: {
-        value: "20100",
-        percent: "20301",
+        value: NOMIS_MEASURES.value,
+        percent: NOMIS_MEASURES.percent,
       },
       source: series.source,
       fetchedAt: series.fetchedAt,

@@ -6,6 +6,7 @@ import {
   seriesToCsv,
   seriesToJson,
 } from "./download";
+import { NOMIS_MEASURES } from "@/lib/nomis/constants";
 import { SAMPLE_CHART, SAMPLE_SERIES } from "@/test/fixtures";
 
 const DATA = [
@@ -64,7 +65,10 @@ describe("seriesToJson", () => {
     const parsed = JSON.parse(seriesToJson(SAMPLE_CHART, SAMPLE_SERIES, DATA));
     expect(parsed.chart.tableCode).toBe("TS008");
     expect(parsed.geography.label).toBe("North West");
-    expect(parsed.measures).toEqual({ value: "20100", percent: "20301" });
+    expect(parsed.measures).toEqual({
+      value: NOMIS_MEASURES.value,
+      percent: NOMIS_MEASURES.percent,
+    });
     expect(parsed.observations).toEqual([
       { category: "Female", code: "1", value: 100, percent: 47.6 },
       { category: "Male", code: "2", value: 110, percent: 52.4 },

@@ -16,6 +16,9 @@ export const NOMIS_CLIENT_MIN_INTERVAL_MS = 300;
 export const NOMIS_PROXY_RATE_LIMIT = 30;
 export const NOMIS_PROXY_RATE_WINDOW_MS = 60_000;
 
+/** Browser localStorage cache TTL for last-successful NOMIS series. */
+export const NOMIS_CACHE_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+
 export const NOMIS_MEASURES = {
   value: "20100",
   percent: "20301",

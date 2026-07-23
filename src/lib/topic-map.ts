@@ -423,61 +423,21 @@ export const TOPIC_CHARTS: TopicChart[] = [
   },
 ];
 
-/** @deprecated Use TOPIC_CHARTS */
-export const V1_CHARTS = TOPIC_CHARTS;
-
-const CHARTS_BY_TOPIC: Record<string, string[]> = {
-  demographics: [
-    "demographics-sex",
-    "demographics-age",
-    "demographics-ethnicity",
-    "demographics-religion",
-    "demographics-sexual-orientation",
-    "demographics-gender-identity",
-  ],
-  housing: [
-    "housing-tenure",
-    "housing-accommodation",
-    "housing-cars",
-    "housing-central-heating",
-    "housing-bedrooms",
-    "housing-occupancy-bedrooms",
-    "housing-deprivation",
-  ],
-  employment: [
-    "employment-economic-activity",
-    "employment-industry",
-    "employment-occupation",
-    "employment-hours-worked",
-    "employment-ns-sec",
-  ],
-  education: ["education-qualification", "education-students"],
-  "health-and-disability": [
-    "health-general",
-    "health-disability",
-    "health-unpaid-care",
-  ],
-  transport: ["transport-method", "transport-distance"],
-  "family-and-relationships": [
-    "family-household-composition",
-    "family-legal-partnership",
-    "family-living-arrangements",
-    "family-household-size",
-  ],
-  migration: [
-    "migration-country-of-birth",
-    "migration-indicator",
-    "migration-year-of-arrival",
-    "migration-length-of-residence",
-    "migration-english-proficiency",
-  ],
-};
+/**
+ * Chart ids use `{prefix}-…` where prefix is the topic slug, or the segment
+ * before `-and-` for compound slugs (e.g. health-and-disability → health).
+ */
+function chartIdPrefixForTopic(topicSlug: string): string {
+  const andIndex = topicSlug.indexOf("-and-");
+  return andIndex === -1 ? topicSlug : topicSlug.slice(0, andIndex);
+}
 
 export function getChartsForTopic(topicSlug: string): TopicChart[] {
-  const ids = CHARTS_BY_TOPIC[topicSlug] ?? [];
-  return ids
-    .map((id) => TOPIC_CHARTS.find((chart) => chart.id === id))
-    .filter((chart): chart is TopicChart => Boolean(chart));
+  if (!TOPICS.some((topic) => topic.slug === topicSlug)) {
+    return [];
+  }
+  const prefix = `${chartIdPrefixForTopic(topicSlug)}-`;
+  return TOPIC_CHARTS.filter((chart) => chart.id.startsWith(prefix));
 }
 
 export function getTopicsWithCharts(): TopicWithCharts[] {

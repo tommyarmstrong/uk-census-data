@@ -6,6 +6,7 @@ import {
   readCachedSeries,
   writeCachedSeries,
 } from "./cache";
+import { NOMIS_CACHE_TTL_MS } from "./constants";
 import { SAMPLE_SERIES } from "@/test/fixtures";
 
 describe("cacheKey", () => {
@@ -29,10 +30,12 @@ describe("localStorage cache", () => {
 
   beforeEach(() => {
     localStorage.clear();
+    vi.useRealTimers();
   });
 
   afterEach(() => {
     localStorage.clear();
+    vi.useRealTimers();
   });
 
   it("returns null when the key is missing", () => {
@@ -60,6 +63,31 @@ describe("localStorage cache", () => {
     writeCachedSeries(key, SAMPLE_SERIES);
     clearCachedSeries(key);
     expect(readCachedSeries(key)).toBeNull();
+  });
+
+  it("expires and removes entries older than the TTL", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-01-01T00:00:00.000Z"));
+    writeCachedSeries(key, SAMPLE_SERIES);
+
+    vi.setSystemTime(
+      new Date(Date.parse("2026-01-01T00:00:00.000Z") + NOMIS_CACHE_TTL_MS + 1),
+    );
+
+    expect(readCachedSeries(key)).toBeNull();
+    expect(localStorage.getItem(key)).toBeNull();
+  });
+
+  it("keeps entries within the TTL", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-01-01T00:00:00.000Z"));
+    writeCachedSeries(key, SAMPLE_SERIES);
+
+    vi.setSystemTime(
+      new Date(Date.parse("2026-01-01T00:00:00.000Z") + NOMIS_CACHE_TTL_MS - 1),
+    );
+
+    expect(readCachedSeries(key)?.series).toEqual(SAMPLE_SERIES);
   });
 
   it("returns null when storage is unavailable", () => {

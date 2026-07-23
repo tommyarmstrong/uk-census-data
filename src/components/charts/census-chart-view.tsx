@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -21,6 +20,7 @@ import {
   formatChartAxisLabel,
   yAxisWidthForLabels,
 } from "@/lib/charts/format-label";
+import { useIsNarrow } from "@/lib/hooks/use-is-narrow";
 import type { ChartDatum } from "@/lib/nomis/chart-data";
 import { NOMIS_MEASURES } from "@/lib/nomis/constants";
 import {
@@ -46,24 +46,6 @@ const GRID_STROKE = "var(--grid-line)";
 
 function formatAxisValue(value: number): string {
   return formatMeasureValue(value, NOMIS_MEASURES.value);
-}
-
-function useIsNarrow(breakpointPx = 640) {
-  const [narrow, setNarrow] = useState(false);
-
-  useEffect(() => {
-    if (typeof window.matchMedia !== "function") {
-      return;
-    }
-
-    const media = window.matchMedia(`(max-width: ${breakpointPx - 1}px)`);
-    const update = () => setNarrow(media.matches);
-    update();
-    media.addEventListener("change", update);
-    return () => media.removeEventListener("change", update);
-  }, [breakpointPx]);
-
-  return narrow;
 }
 
 type CensusChartViewProps = {

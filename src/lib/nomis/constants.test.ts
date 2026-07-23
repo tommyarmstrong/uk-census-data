@@ -7,9 +7,16 @@ import {
   getGeographyByCode,
   getSelectableGeographies,
   NOMIS_BASE_URL,
+  NOMIS_CACHE_TTL_MS,
   NOMIS_MEASURES,
   WALES,
 } from "./constants";
+
+describe("NOMIS_CACHE_TTL_MS", () => {
+  it("is thirty days", () => {
+    expect(NOMIS_CACHE_TTL_MS).toBe(30 * 24 * 60 * 60 * 1000);
+  });
+});
 
 describe("getGeographyByCode", () => {
   it("resolves known codes including the Wales region alias", () => {

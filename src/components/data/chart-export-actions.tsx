@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   ChevronDown,
   Download,
@@ -16,15 +16,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { ChartDatum } from "@/lib/nomis/chart-data";
-import type { CensusSeries } from "@/lib/nomis/types";
-import type { TopicChart } from "@/lib/topic-map";
 import {
   buildExportBasename,
   downloadTextFile,
   seriesToCsv,
   seriesToJson,
 } from "@/lib/export/download";
+import { useIsNarrow } from "@/lib/hooks/use-is-narrow";
+import type { ChartDatum } from "@/lib/nomis/chart-data";
+import type { CensusSeries } from "@/lib/nomis/types";
+import type { TopicChart } from "@/lib/topic-map";
 import { cn } from "@/lib/utils";
 
 type ChartExportActionsProps = {
@@ -36,24 +37,6 @@ type ChartExportActionsProps = {
 
 const actionButtonClass =
   "min-h-11 min-w-11 gap-1.5 px-0 sm:min-h-7 sm:min-w-0 sm:px-2.5";
-
-function useIsNarrow(breakpointPx = 640) {
-  const [narrow, setNarrow] = useState(false);
-
-  useEffect(() => {
-    if (typeof window.matchMedia !== "function") {
-      return;
-    }
-
-    const media = window.matchMedia(`(max-width: ${breakpointPx - 1}px)`);
-    const update = () => setNarrow(media.matches);
-    update();
-    media.addEventListener("change", update);
-    return () => media.removeEventListener("change", update);
-  }, [breakpointPx]);
-
-  return narrow;
-}
 
 export function ChartExportActions({
   chart,

@@ -1,10 +1,11 @@
 **INTRO**
 
-This project is to test how agentic AI coding has improved by July 2026. 
+This project is to test how agentic AI coding has improved by July 2026.
 
 This is in comparison with a similar project to test "Vibe Coding", mostly using GPT-4.1, carried out in June 2025 ([project code](https://github.com/tommyarmstrong/UKCensus) and [app](https://ukcensus-v1.tommyarmstrong.uk))
 
 This project was built by Cursor, using the "Auto" model, which was not available in June 2025. All of the code, configuration and documentation in this project was written by Cursor and the models, except:
+
 - This Intro section to the README
 - [docs/requirements.md](docs/requirements.md), initial version was AI-assisted, but I wanted to ensure a similar tech stack and scope to the 2025 project.
 - [docs/prompt-record.md](docs/prompt-record.md), a record of the prompts that were given to Cursor.
