@@ -1308,27 +1308,4 @@ Outcome:
 
 All five are wired. Inventory is now 34 charts.
 
-Topic Chart Table Type
-Housing
-Occupancy rating for bedrooms
-TS052
-bar
-Housing
-Households by deprivation dimensions
-TS011
-bar
-Employment
-NS-SeC
-TS062
-horizontal-bar
-Family & Relationships
-Household size
-TS017
-bar
-Migration
-Proficiency in English
-TS029
-horizontal-bar (detail)
-
-
 Live NOMIS checks returned HTTP 200 for each; topic-map tests passed. Say if you want this committed and pushed.
