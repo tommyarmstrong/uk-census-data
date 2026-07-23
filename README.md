@@ -6,8 +6,8 @@ This is in comparison with a similar project to test "Vibe Coding", mostly using
 
 This project was built by Cursor, using the "Auto" model, which was not available in June 2025. All of the code, configuration and documentation in this project was written by Cursor and the models, except:
 - This Intro section to the README
-- The initial version of docs/requirements.md, which was AI-assisted, but I wanted to ensure a similar tech stack and scope to the 2025 project
-- A record of the prompts that were given to Cursor in docs/prompt-record.md.
+- [docs/requirements.md](docs/requirements.md), initial version was AI-assisted, but I wanted to ensure a similar tech stack and scope to the 2025 project.
+- [docs/prompt-record.md](docs/prompt-record.md), a record of the prompts that were given to Cursor.
 
 The updated app is deployed to [ukcensus-v1.tommyarmstrong.uk](https://ukcensus.tommyarmstrong.uk).
 
