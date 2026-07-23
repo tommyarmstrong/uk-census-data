@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="UK Census Data">
+  <!-- Full-bleed teal field; OS masks apply rounding. Bars sit in the maskable safe zone. -->
+  <rect width="512" height="512" fill="#2A6B6B"/>
+  <rect x="118" y="268" width="68" height="126" rx="14" fill="#F4F8F8"/>
+  <rect x="222" y="188" width="68" height="206" rx="14" fill="#F4F8F8"/>
+  <rect x="326" y="128" width="68" height="266" rx="14" fill="#F4F8F8"/>
+</svg>

@@ -1,10 +1,12 @@
 /* UK Census Data service worker — app shell only.
  * Chart/NOMIS payloads are not invented offline; the app uses last localStorage cache. */
 
-const CACHE_NAME = "uk-census-shell-v1";
+const CACHE_NAME = "uk-census-shell-v2";
 const PRECACHE_URLS = [
   "/",
   "/manifest.webmanifest",
+  "/icon.svg",
+  "/icon-32x32.png",
   "/icon-192x192.png",
   "/icon-512x512.png",
   "/apple-touch-icon.png",
