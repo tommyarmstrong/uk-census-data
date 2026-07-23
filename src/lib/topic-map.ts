@@ -84,7 +84,7 @@ export const TOPIC_CHARTS: TopicChart[] = [
     datasetId: "NM_2060_1",
     tableCode: "TS077",
     categoryDimension: "c2021_sexor_6",
-    chartType: "pie",
+    chartType: "horizontal-bar",
     excludeTotals: true,
   },
   {
