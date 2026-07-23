@@ -4,11 +4,11 @@ A modern web application for exploring and visualising official **UK Census 2021
 
 ## Features
 
-- **Eight Census topics** — Demographics, Housing, Employment, Education, Health & Disability, Transport, Family & Relationships, and Migration
+- **Eight Census topics** — Demographics, Housing, Employment, Education, Health and Disability, Transport, Family and Relationships, and Migration
 - **Live NOMIS data** — Topic Summary tables fetched on demand (no mock data); cached in the browser with stale indicators
-- **Region filter** — England and Wales, England, Wales, and English regions via shareable `?geography=` URLs
-- **Interactive charts** — Pie, bar, and horizontal-bar views powered by Recharts (34 charts across eight topics)
-- **Export** — Download chart data/views from topic pages
+- **Region filter** — England and Wales, England, Wales, and English regions via shareable `?geography=` URLs (topic pages)
+- **Interactive charts** — Pie, bar, and horizontal-bar views powered by Recharts (34 charts across eight topics); tooltips show count and percent
+- **Export & share** — Download chart data as CSV or JSON, or share the current chart URL
 - **PWA** — Installable shell with a service worker for offline-friendly static assets
 - **Quality gates** — ESLint, Prettier, Vitest, Husky, and GitHub Actions CI
 
@@ -82,7 +82,8 @@ uk-census-data/
 │   │   ├── topics.ts              # Topic catalogue
 │   │   ├── topic-map.ts           # Chart inventory per topic
 │   │   ├── geography-url.ts       # Geography URL helpers
-│   │   ├── export/                # Client download helpers
+│   │   ├── charts/                # Axis/label formatting helpers
+│   │   ├── export/                # CSV/JSON download helpers
 │   │   └── nomis/                 # Client, cache, JSON-stat parse, constants
 │   └── test/                      # Shared fixtures and Vitest setup
 ├── package.json
@@ -103,12 +104,12 @@ uk-census-data/
 
 ## Application routes
 
-| Route            | Description                                              |
-| ---------------- | -------------------------------------------------------- |
-| `/`              | Home — product intro and topic grid                      |
-| `/topics/[slug]` | Topic page with region filter and interactive chart(s)   |
-| `/about`         | About the app, data source, and Open Government Licence  |
-| `/api/nomis`     | Server proxy to NOMIS (rate limiting and response cache) |
+| Route            | Description                                                            |
+| ---------------- | ---------------------------------------------------------------------- |
+| `/`              | Home — topic index (emoji tiles)                                       |
+| `/topics/[slug]` | Topic page with region filter, subtopic switcher, and live chart panel |
+| `/about`         | About the app, data source, and Open Government Licence                |
+| `/api/nomis`     | Server proxy to NOMIS (rate limiting and response cache)               |
 
 Region selection is stored in the URL as `?geography=<code>` so views are shareable.
 
@@ -124,13 +125,14 @@ The app is frontend-first: Next.js API routes act only as a thin proxy for shapi
 
 ## Documentation
 
-| Document                                         | Contents                                |
-| ------------------------------------------------ | --------------------------------------- |
-| [docs/requirements.md](docs/requirements.md)     | Product brief and stack requirements    |
-| [docs/ia.md](docs/ia.md)                         | Information architecture and navigation |
-| [docs/topic-map.md](docs/topic-map.md)           | v1 chart inventory and dataset IDs      |
-| [docs/nomis-research.md](docs/nomis-research.md) | NOMIS API research notes                |
-| [docs/design.md](docs/design.md)                 | UI / design notes                       |
+| Document                                         | Contents                                       |
+| ------------------------------------------------ | ---------------------------------------------- |
+| [docs/requirements.md](docs/requirements.md)     | Product brief and stack requirements           |
+| [docs/ia.md](docs/ia.md)                         | Information architecture and navigation        |
+| [docs/topic-map.md](docs/topic-map.md)           | Chart inventory (34 charts) and dataset IDs    |
+| [docs/nomis-research.md](docs/nomis-research.md) | NOMIS API research notes                       |
+| [docs/design.md](docs/design.md)                 | UI / design notes                              |
+| [docs/roadmap.md](docs/roadmap.md)               | Staged post-v3 work and agent prompt templates |
 
 ## Licence
 
