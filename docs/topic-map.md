@@ -17,7 +17,7 @@ Geography for all charts: England & Wales aggregates and regions; default **Engl
 | demographics             | Age (five-year bands)                 | `NM_2020_1` | `c2021_age_19`            | bar            | —             |
 | demographics             | Ethnic group                          | `NM_2041_1` | `c2021_eth_20`            | horizontal-bar | detail        |
 | demographics             | Religion                              | `NM_2049_1` | `c2021_religion_10`       | horizontal-bar | —             |
-| demographics             | Sexual orientation                    | `NM_2060_1` | `c2021_sexor_6`           | pie            | —             |
+| demographics             | Sexual orientation                    | `NM_2060_1` | `c2021_sexor_6`           | horizontal-bar | —             |
 | demographics             | Gender identity                       | `NM_2061_1` | `c2021_genderid_7`        | horizontal-bar | —             |
 | housing                  | Tenure                                | `NM_2072_1` | `c2021_tenure_9`          | bar            | —             |
 | housing                  | Accommodation type                    | `NM_2062_1` | `c2021_acctype_9`         | horizontal-bar | —             |

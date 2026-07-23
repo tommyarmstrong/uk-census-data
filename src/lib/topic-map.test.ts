@@ -109,6 +109,9 @@ describe("topic-map helpers", () => {
       "detail",
     );
     expect(getChartById("employment-ns-sec")?.chartType).toBe("horizontal-bar");
+    expect(getChartById("demographics-sexual-orientation")?.chartType).toBe(
+      "horizontal-bar",
+    );
     expect(getChartById("demographics-gender-identity")?.chartType).toBe(
       "horizontal-bar",
     );
