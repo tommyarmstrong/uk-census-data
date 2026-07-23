@@ -51,13 +51,7 @@ export function RegionFilter({
   };
 
   return (
-    <div className={cn("flex items-center gap-2", className)}>
-      <label
-        htmlFor={id}
-        className="text-muted-foreground shrink-0 text-xs font-medium"
-      >
-        Region
-      </label>
+    <div className={cn(className)}>
       <Select
         value={geography.code}
         onValueChange={onValueChange}

@@ -58,7 +58,7 @@ describe("TopicRegionFilter", () => {
   it("renders the topic-page region control", () => {
     const { container } = render(<TopicRegionFilter />);
 
-    expect(screen.getByText("Region")).toBeInTheDocument();
+    expect(screen.queryByText("Region")).not.toBeInTheDocument();
     expect(container.querySelector("#region-filter-topic")).toBeTruthy();
     expect(screen.getByTestId("select")).toHaveAttribute(
       "data-value",

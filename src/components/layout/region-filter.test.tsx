@@ -53,9 +53,10 @@ describe("RegionFilter", () => {
     useSearchParams.mockReturnValue(new URLSearchParams("foo=1"));
   });
 
-  it("renders the region label", () => {
+  it("renders the region control without a visible Region label", () => {
     render(<RegionFilter />);
-    expect(screen.getByText("Region")).toBeInTheDocument();
+    expect(screen.queryByText("Region")).not.toBeInTheDocument();
+    expect(screen.getByTestId("select")).toBeInTheDocument();
   });
 
   it("pushes an updated geography query when a region is chosen", async () => {

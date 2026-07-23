@@ -10,9 +10,10 @@ function TopicRegionFilterInner() {
 
 function TopicRegionFilterFallback() {
   return (
-    <div className="text-muted-foreground flex h-11 items-center text-xs">
-      Region
-    </div>
+    <div
+      className="bg-muted/40 h-11 w-[15rem] animate-pulse rounded-lg sm:h-8"
+      aria-hidden
+    />
   );
 }
 
