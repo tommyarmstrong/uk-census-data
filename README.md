@@ -1,3 +1,18 @@
+**INTRO**
+
+This project is to test how agentic AI coding has improved by July 2026. 
+
+This is in comparison with a similar project to test "Vibe Coding", mostly using GPT-4.1, carried out in June 2025 ([project code](https://github.com/tommyarmstrong/UKCensus) and [app](https://ukcensus-v1.tommyarmstrong.uk))
+
+This project was built by Cursor, using the "Auto" model, which was not available in June 2025. All of the code, configuration and documentation in this project was written by Cursor and the models, except:
+- This Intro section to the README
+- The initial version of docs/requirements.md, which was AI-assisted, but I wanted to ensure a similar tech stack and scope to the 2025 project
+- A record of the prompts that were given to Cursor in docs/prompt-record.md.
+
+The updated app is deployed to [ukcensus-v1.tommyarmstrong.uk](https://ukcensus.tommyarmstrong.uk).
+
+---
+
 # UK Census Data
 
 A modern web application for exploring and visualising official **UK Census 2021** statistics for England and Wales. Interactive charts load live from the [NOMIS](https://www.nomisweb.co.uk/) API (Office for National Statistics), with region filtering, chart export, and a lightweight Progressive Web App shell.
