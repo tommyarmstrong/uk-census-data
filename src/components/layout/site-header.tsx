@@ -47,7 +47,7 @@ function BrandMark({ className }: { className?: string }) {
       alt=""
       width={32}
       height={32}
-      className={cn("size-7 rounded-md sm:size-8", className)}
+      className={cn("size-[1.1em] rounded-sm", className)}
       aria-hidden
       priority
     />
